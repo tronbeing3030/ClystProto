@@ -1,20 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template
+from sqlalchemy.orm import DeclarativeBase
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Float
-import models.dbs
+
+# from models.dbs import (User, Artists, Posts)
 
 
 class Base(DeclarativeBase):
     pass
 
 
-app = Flask(__name__)
+db = SQLAlchemy()
 
-db = SQLAlchemy(model_class=Base)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///posts.db"
+app = Flask(__name__, static_folder='static')
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///clyst.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-
 
 with app.app_context():
     db.create_all()
@@ -22,10 +23,51 @@ with app.app_context():
 
 @app.route('/', methods=["GET", "POST"])
 def home():
-    pass
-    # result = db.session.execute(db.select(Post).order_by(Post.product_name))
-    # all_posts = result.scalars()
-    # return render_template("index.html", posts=all_posts)
+    # posts = db.session.query(
+    #     Posts.post_id,
+    #     Posts.post_title,
+    #     Posts.description,
+    #     Posts.created_at,
+    #     Posts.media_url,
+    #     Artists.role.label("tag"),
+    #     User.name.label("artist_name")
+    # ).join(
+    #     Artists, Posts.artist_id == Artists.artist_id
+    # ).join(
+    #     User, User.user_id == Artists.user_id
+    # ).all()
+    #
+    # all_postings = [
+    #     {
+    #         'id': post.post_id,
+    #         'title': post.post_title,
+    #         'description': post.description,
+    #         'image': post.media_url,
+    #         'date': post.created_at.strftime('%Y-%m-%d'),
+    #         'tag': post.tag.value if post.tag else '',
+    #         'artist_name': post.artist_name
+    #     } for post in posts
+    # ]
+
+    all_postings = [{
+            'id': "post_id",
+            'title': "post_title",
+            'description': "description",
+            'image': "boyimage",
+            'date': "12-12-2025",
+            'tag': "value",
+            'artist_name': "artist_name"
+        },{
+            'id': "post_id2",
+            'title': "post_title2",
+            'description': "description2",
+            'image': "boyimage2",
+            'date': "10-12-2025",
+            'tag': "value2",
+            'artist_name': "artist_name2"
+        }]
+
+    return render_template("index.html", posts=all_postings)
 
 
 @app.route("/add", methods=["GET", "POST"])

@@ -7,13 +7,15 @@
   <body>
     <h1>Artisan Profile</h1>
 
-      <a href="/">Community</a> # Back to community page/home page
-        {{post.artist_name}} - {{post.artist_bio}}
+      <a href="/">Community</a> <!-- Back to community page/home page -->
+        {{image}} - {{artist_name}} {{tag}} - {{post.artist_email}} - {{post.artist_bio}}
+        {{artist_role}} - {{artist_phone}} - {{artist_location}}
       <ul>
       {% for post in posts %}
       <li>
-        {{post.product_name}} - ${{post.price}}
-        <a href="{{url_for('product_buy', id=post.id)}}">Buy Now</a> # Redirects to buying of that particular product
+        {{image}} - {{post.product_name}} - {{rating}} - Rs.{{post.price}}
+        <a href="{{url_for('product_buy', id=post.id)}}">Buy Now</a>
+        <!-- Redirects to buying of that particular product -->
       </li>
       {% endfor %}
     </ul>
