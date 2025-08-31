@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clyst</title>
+  </head>
+  <body>
+    <h1>Add</h1>
+
+<!-- Based on whether they post or add products, form changes accordingly -->
+
+<!-- For adding posts -->
+    <form action="{{ url_for('add') }}" method="POST">
+      <label>Title</label>
+      <input name="post_title" type="text" required/>
+      <label>Description</label>
+      <textarea name="description" required></textarea>
+      <label>Add Image</label>
+      <input name="post_image" type="text" />
+      <button type="submit">Post Artwork</button>
+    </form>
+
+
+<!--    <h1>Post</h1>-->
+<!--&lt;!&ndash; For adding products &ndash;&gt;-->
+<!--    <form action="{{ url_for('add') }}" method="POST">-->
+<!--      <label>Product Name</label>-->
+<!--      <input name="product_name" type="text" required/>-->
+<!--      <label>Price</label>-->
+<!--      <input name="price" type="text" required/>-->
+<!--      <label>Add Image</label>-->
+<!--      <input name="product_image" type="text" />-->
+<!--      <button type="submit">Add Product</button>-->
+<!--    </form>-->
+  </body>
+</html>
