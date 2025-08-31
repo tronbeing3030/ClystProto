@@ -13,8 +13,11 @@
     <ul>
       {% for post in posts %}
       <li>
-        <a href="{{url_for('delete', id=post.id)}}">Delete</a>
-        {{post.artist_name}} {{post.tag}} - {{post.image}} - {{post.title}} - {{post.description}} - {{post.date}}
+        <a href="{{url_for('delete_posts', id=post.id)}}">Delete</a>
+        {% if post.media_url%}
+        <img src={{post.media_url}} alt="">
+        {% endif %}
+        {{post.artist.name}} tag - {{post.post_title}} - {{post.description}} - {{post.created_at}}
         <a href="/profile.html">View Artisan</a> <!-- Redirects to profile page -->
       </li>
       {% endfor %}

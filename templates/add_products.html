@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clyst</title>
+  </head>
+  <body>
+    <h1>Add Products</h1>
+<!-- For adding products -->
+    <form action="{{ url_for('add_products') }}" method="POST">
+      <label>Product Name</label>
+      <input name="product_name" type="text" required/>
+      <label>Price</label>
+      <input name="price" type="text" required/>
+      <label>Add Image</label>
+      <input name="product_image" type="text" />
+      <button type="submit">Add Product</button>
+    </form>
+  </body>
+</html>

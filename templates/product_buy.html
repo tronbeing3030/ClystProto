@@ -8,7 +8,7 @@
     <h1>MarketPlace</h1>
 
       <a href="/">Community</a> <!-- Back to community page/home page -->
-      <a href="{{url_for('delete', id=post.id)}}">Delete</a>
+      <a href="{{url_for('delete_products', id=post.id)}}">Delete</a>
       {{image}} - {{post.product_name}} - {{artist_name}} {{tag}} - {{rating}} - Rs.{{post.price}} - {{reviews}}
       <a href="/price_gateway.html">Purchase</a> <!-- Redirects to payments option -->
       <a href="/profile.html">View Artisan</a> <!-- Redirects to profile page -->
