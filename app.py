@@ -100,6 +100,14 @@ def home():
     return render_template("index.html", posts=posts, current_user=current_user)
 
 
+@app.route("/products", methods=["GET", "POST"])
+@admin_only
+def products():
+    result = db.session.execute(db.select(Product))
+    products = result.scalars().all()
+    return render_template("products.html", products=products, current_user=current_user)
+
+
 @app.route("/add", methods=["GET", "POST"])
 @admin_only
 def add_posts():
@@ -140,7 +148,7 @@ def delete_posts():
     render_template(url_for('home'))
 
 
-@app.route("/delete")
+@app.route("/delete_products")
 @admin_only
 def delete_products():
     product_id = request.args.get('product_id')

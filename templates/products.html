@@ -11,9 +11,9 @@
     <ul>
       {% for product in products %}
       <li>
-        <a href="{{url_for('delete', id=post.id)}}">Delete</a>
-        {{image}} - {{post.product_name}} - {{artist_name}} {{tag}} - {{rating}} - Rs.{{post.price}}
-        <a href="{{url_for('product_buy', id=post.id)}}">Buy Now</a>
+        <a href="{{url_for('delete_products', id=product.id)}}">Delete</a>
+        <p>{{product.title}} - {{product.artist.name}} - {{product.description}} - Rs.{{product.price}}</p>
+        <a href="{{url_for('product_buy', id=product.id)}}">Buy Now</a>
         <a href="/profile.html">View Artisan</a> <!-- Redirects to profile page -->
       </li>
       {% endfor %}
