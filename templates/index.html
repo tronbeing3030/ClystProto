@@ -2,23 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clyst</title>
   </head>
   <body>
     <h1>Community Feed</h1>
 
-    <!-- Redirects to marketplace/products page -->
-      <a href="/products">MarketPlace</a> <!-- Redirects to products page -->
-      <a href="{{ url_for('add') }}">Start posting.</a> <!-- Redirects to posting page -->
+    <!-- Navigation -->
+    <div>
+      <a href="/products">MarketPlace</a>
+      <!-- Redirects to products page -->
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('add_posts') }}">Start posting.</a>
+      <!-- Redirects to posting page -->
+      <a href="{{ url_for('profile') }}">Profile</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </div>
     <ul>
       {% for post in posts %}
       <li>
-        <a href="{{url_for('delete_posts', id=post.id)}}">Delete</a>
+        <a href="{{url_for('delete_posts', post_id=post.post_id)}}">Delete</a>
         {% if post.media_url%}
-        <img src={{post.media_url}} alt="">
-        {% endif %}
-        {{post.artist.name}} tag - {{post.post_title}} - {{post.description}} - {{post.created_at}}
-        <a href="/profile.html">View Artisan</a> <!-- Redirects to profile page -->
+        <img src="{{post.media_url}}" alt="" />
+        {% endif %} {{post.artist.name}} tag - {{post.post_title}} -
+        {{post.description}} - {{post.created_at}}
+        <a href="/profile.html">View Artisan</a>
+        <!-- Redirects to profile page -->
       </li>
       {% endfor %}
     </ul>
