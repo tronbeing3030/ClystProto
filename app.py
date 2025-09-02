@@ -101,7 +101,9 @@ def home():
 
 @app.route('/products')
 def products_page():
-    return render_template('products.html', current_user=current_user)
+    result = db.session.execute(db.select(Product))
+    products = result.scalars().all()
+    return render_template('products.html', products=products, current_user=current_user)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -169,6 +171,7 @@ def add_posts():
             artist_id=current_user.id,
             post_title=request.form['post_title'],
             description=request.form['description'],
+            media_url=request.form.get('post_image', ''),
             created_at=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -185,14 +188,14 @@ def add_products():
         new_product = Product(
             artist_id=current_user.id,
             title=request.form['product_name'],
-            description=request.form['description'],
+            description=request.form.get('description', ''),
             price=request.form['price'],
-            img_url=request.form['product_image'],
+            img_url=request.form.get('product_image', ''),
             created_at=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_product)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('products_page'))
     return render_template("add_products.html", current_user=current_user)
 
 
@@ -215,13 +218,42 @@ def delete_products():
     product_to_delete = db.get_or_404(Product, product_id)
     db.session.delete(product_to_delete)
     db.session.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('products_page'))
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html", current_user=current_user)
+    # Get current user's posts and products
+    user_posts = db.session.execute(db.select(Posts).where(Posts.artist_id == current_user.id)).scalars().all()
+    user_products = db.session.execute(db.select(Product).where(Product.artist_id == current_user.id)).scalars().all()
+    
+    return render_template("profile.html", 
+                         current_user=current_user, 
+                         posts=user_posts, 
+                         products=user_products)
+
+
+@app.route("/profile/<int:user_id>")
+def view_profile(user_id):
+    # Get user's posts and products for public profile view
+    user = db.get_or_404(User, user_id)
+    user_posts = db.session.execute(db.select(Posts).where(Posts.artist_id == user_id)).scalars().all()
+    user_products = db.session.execute(db.select(Product).where(Product.artist_id == user_id)).scalars().all()
+    
+    return render_template("profile.html", 
+                         current_user=current_user, 
+                         profile_user=user,
+                         posts=user_posts, 
+                         products=user_products)
+
+
+@app.route("/product/<int:product_id>")
+def product_buy(product_id):
+    product = db.get_or_404(Product, product_id)
+    return render_template("product_buy.html", 
+                         current_user=current_user, 
+                         product=product)
 
 
 if __name__ == "__main__":

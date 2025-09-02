@@ -2,19 +2,363 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clyst</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clyst - Create Post</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #fafafa;
+        color: #262626;
+      }
+
+      .container {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background: white;
+        border-right: 1px solid #dbdbdb;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #262626;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 10px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #262626;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+      }
+
+      .nav-link:hover {
+        background-color: #f8f9fa;
+      }
+
+      .nav-link i {
+        margin-right: 12px;
+        width: 20px;
+      }
+
+      .nav-link.active {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      /* Form Container */
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-header {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .form-header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .form-header p {
+        color: #8e8e8e;
+        font-size: 16px;
+      }
+
+      .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 32px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 120px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+      }
+
+      .form-help {
+        font-size: 14px;
+        color: #8e8e8e;
+        margin-top: 4px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 32px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border-radius: 24px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #262626;
+        border: 1px solid #e9ecef;
+      }
+
+      .btn-secondary:hover {
+        background: #e9ecef;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .form-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Add Posts</h1>
-<!-- For adding posts -->
-    <form action="{{ url_for('add_posts') }}" method="POST">
-      <label>Title</label>
-      <input name="post_title" type="text" required/>
-      <label>Description</label>
-      <textarea name="description" required></textarea>
-      <label>Add Image</label>
-      <input name="post_image" type="text" />
-      <button type="submit">Post Artwork</button>
-    </form>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo"><i class="fas fa-palette"></i> Clyst</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="{{ url_for('home') }}" class="nav-link">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('products_page') }}" class="nav-link">
+              <i class="fas fa-store"></i>
+              Marketplace
+            </a>
+          </li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{{ url_for('add_posts') }}" class="nav-link active">
+              <i class="fas fa-plus-circle"></i>
+              Create Post
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('add_products') }}" class="nav-link">
+              <i class="fas fa-plus-square"></i>
+              Add Product
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('profile') }}" class="nav-link">
+              <i class="fas fa-user"></i>
+              Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}" class="nav-link">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('register') }}" class="nav-link">
+              <i class="fas fa-user-plus"></i>
+              Register
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="form-container">
+          <div class="form-header">
+            <h1><i class="fas fa-plus-circle"></i> Create New Post</h1>
+            <p>Share your artwork with the community</p>
+          </div>
+
+          <div class="form-card">
+            <form action="{{ url_for('add_posts') }}" method="POST">
+              <div class="form-group">
+                <label for="post_title" class="form-label">
+                  <i class="fas fa-heading"></i> Post Title
+                </label>
+                <input
+                  type="text"
+                  id="post_title"
+                  name="post_title"
+                  class="form-input"
+                  placeholder="Enter a catchy title for your post..."
+                  required
+                />
+                <div class="form-help">Make it engaging and descriptive</div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="form-label">
+                  <i class="fas fa-align-left"></i> Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  class="form-textarea"
+                  placeholder="Tell us about your artwork, inspiration, techniques used..."
+                  required
+                ></textarea>
+                <div class="form-help">
+                  Share the story behind your creation
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="post_image" class="form-label">
+                  <i class="fas fa-image"></i> Image URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  id="post_image"
+                  name="post_image"
+                  class="form-input"
+                  placeholder="https://example.com/your-image.jpg"
+                />
+                <div class="form-help">
+                  Add a direct link to your artwork image
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                  <i class="fas fa-times"></i>
+                  Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i>
+                  Post Artwork
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -2,22 +2,529 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clyst</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clyst - Profile</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #fafafa;
+        color: #262626;
+      }
+
+      .container {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background: white;
+        border-right: 1px solid #dbdbdb;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #262626;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 10px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #262626;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+      }
+
+      .nav-link:hover {
+        background-color: #f8f9fa;
+      }
+
+      .nav-link i {
+        margin-right: 12px;
+        width: 20px;
+      }
+
+      .nav-link.active {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      /* Profile Header */
+      .profile-header {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+        font-weight: bold;
+        margin: 0 auto 20px;
+      }
+
+      .profile-name {
+        font-size: 32px;
+        font-weight: 600;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .profile-info {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .info-item {
+        text-align: center;
+      }
+
+      .info-label {
+        font-size: 14px;
+        color: #8e8e8e;
+        margin-bottom: 4px;
+      }
+
+      .info-value {
+        font-size: 16px;
+        font-weight: 500;
+        color: #262626;
+      }
+
+      .profile-bio {
+        max-width: 600px;
+        margin: 0 auto;
+        color: #262626;
+        line-height: 1.6;
+      }
+
+      /* Content Tabs */
+      .content-tabs {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 24px;
+      }
+
+      .tab-nav {
+        display: flex;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .tab-button {
+        flex: 1;
+        padding: 16px;
+        background: none;
+        border: none;
+        font-size: 16px;
+        font-weight: 500;
+        color: #8e8e8e;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .tab-button.active {
+        color: #262626;
+        border-bottom: 2px solid #667eea;
+      }
+
+      .tab-content {
+        padding: 24px;
+      }
+
+      /* Grid Layouts */
+      .posts-grid,
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 16px;
+      }
+
+      .post-item,
+      .product-item {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+
+      .post-item:hover,
+      .product-item:hover {
+        transform: translateY(-2px);
+      }
+
+      .item-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 32px;
+      }
+
+      .item-content {
+        padding: 16px;
+      }
+
+      .item-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .item-description {
+        font-size: 14px;
+        color: #8e8e8e;
+        line-height: 1.4;
+        margin-bottom: 12px;
+      }
+
+      .item-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #28a745;
+      }
+
+      .item-actions {
+        margin-top: 12px;
+      }
+
+      .btn {
+        padding: 6px 12px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .profile-info {
+          gap: 20px;
+        }
+        .posts-grid,
+        .products-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Empty states */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #8e8e8e;
+      }
+
+      .empty-state i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        color: #dbdbdb;
+      }
+    </style>
   </head>
   <body>
-    <h1>Artisan Profile</h1>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo"><i class="fas fa-palette"></i> Clyst</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="{{ url_for('home') }}" class="nav-link">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('products_page') }}" class="nav-link">
+              <i class="fas fa-store"></i>
+              Marketplace
+            </a>
+          </li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{{ url_for('add_posts') }}" class="nav-link">
+              <i class="fas fa-plus-circle"></i>
+              Create Post
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('add_products') }}" class="nav-link">
+              <i class="fas fa-plus-square"></i>
+              Add Product
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('profile') }}" class="nav-link active">
+              <i class="fas fa-user"></i>
+              Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}" class="nav-link">
+              <i class="fas fa-sign-in-alt"></i>
+              Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('register') }}" class="nav-link">
+              <i class="fas fa-user-plus"></i>
+              Register
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
 
-      <a href="/">Community</a> <!-- Back to community page/home page -->
-        {{image}} - {{artist_name}} {{tag}} - {{post.artist_email}} - {{post.artist_bio}}
-        {{artist_role}} - {{artist_phone}} - {{artist_location}}
-      <ul>
-      {% for post in posts %}
-      <li>
-        {{image}} - {{post.product_name}} - {{rating}} - Rs.{{post.price}}
-        <a href="{{url_for('product_buy', id=post.id)}}">Buy Now</a>
-        <!-- Redirects to buying of that particular product -->
-      </li>
-      {% endfor %}
-    </ul>
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="profile-avatar">
+            {% if profile_user %} {{ profile_user.name[0].upper() }} {% else %}
+            {{ current_user.name[0].upper() }} {% endif %}
+          </div>
+
+          <h1 class="profile-name">
+            {% if profile_user %} {{ profile_user.name }} {% else %} {{
+            current_user.name }} {% endif %}
+          </h1>
+
+          <div class="profile-info">
+            <div class="info-item">
+              <div class="info-label">Posts</div>
+              <div class="info-value">{{ posts|length }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Products</div>
+              <div class="info-value">{{ products|length }}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Member Since</div>
+              <div class="info-value">
+                {% if profile_user %} {{ profile_user.created_at }} {% else %}
+                {{ current_user.created_at }} {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-bio">
+            {% if profile_user %} {% if profile_user.email %}
+            <p><strong>Email:</strong> {{ profile_user.email }}</p>
+            {% endif %} {% if profile_user.phone %}
+            <p><strong>Phone:</strong> {{ profile_user.phone }}</p>
+            {% endif %} {% if profile_user.location %}
+            <p><strong>Location:</strong> {{ profile_user.location }}</p>
+            {% endif %} {% else %} {% if current_user.email %}
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            {% endif %} {% if current_user.phone %}
+            <p><strong>Phone:</strong> {{ current_user.phone }}</p>
+            {% endif %} {% if current_user.location %}
+            <p><strong>Location:</strong> {{ current_user.location }}</p>
+            {% endif %} {% endif %}
+          </div>
+        </div>
+
+        <!-- Content Tabs -->
+        <div class="content-tabs">
+          <div class="tab-nav">
+            <button class="tab-button active" onclick="showTab('posts')">
+              <i class="fas fa-images"></i> Posts ({{ posts|length }})
+            </button>
+            <button class="tab-button" onclick="showTab('products')">
+              <i class="fas fa-store"></i> Products ({{ products|length }})
+            </button>
+          </div>
+
+          <div class="tab-content">
+            <!-- Posts Tab -->
+            <div id="posts-tab" class="tab-panel">
+              {% if posts %}
+              <div class="posts-grid">
+                {% for post in posts %}
+                <div class="post-item">
+                  {% if post.media_url %}
+                  <img
+                    src="{{ post.media_url }}"
+                    alt="{{ post.post_title }}"
+                    class="item-image"
+                  />
+                  {% else %}
+                  <div class="item-image">
+                    <i class="fas fa-image"></i>
+                  </div>
+                  {% endif %}
+                  <div class="item-content">
+                    <h3 class="item-title">{{ post.post_title }}</h3>
+                    <p class="item-description">
+                      {{ post.description[:100] }}{% if post.description|length
+                      > 100 %}...{% endif %}
+                    </p>
+                    <div class="item-actions">
+                      <span class="info-value">{{ post.created_at }}</span>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="empty-state">
+                <i class="fas fa-images"></i>
+                <h3>No posts yet</h3>
+                <p>Start sharing your artwork with the community!</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products-tab" class="tab-panel" style="display: none">
+              {% if products %}
+              <div class="products-grid">
+                {% for product in products %}
+                <div class="product-item">
+                  {% if product.img_url %}
+                  <img
+                    src="{{ product.img_url }}"
+                    alt="{{ product.title }}"
+                    class="item-image"
+                  />
+                  {% else %}
+                  <div class="item-image">
+                    <i class="fas fa-image"></i>
+                  </div>
+                  {% endif %}
+                  <div class="item-content">
+                    <h3 class="item-title">{{ product.title }}</h3>
+                    <p class="item-description">
+                      {{ product.description[:100] if product.description else
+                      '' }}{% if product.description and
+                      product.description|length > 100 %}...{% endif %}
+                    </p>
+                    <div class="item-price">Rs.{{ product.price }}</div>
+                    <div class="item-actions">
+                      <a
+                        href="{{ url_for('product_buy', product_id=product.product_id) }}"
+                        class="btn btn-primary"
+                      >
+                        <i class="fas fa-shopping-cart"></i> View
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="empty-state">
+                <i class="fas fa-store"></i>
+                <h3>No products yet</h3>
+                <p>Start selling your artwork in the marketplace!</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showTab(tabName) {
+        // Hide all tab panels
+        const tabPanels = document.querySelectorAll(".tab-panel");
+        tabPanels.forEach((panel) => (panel.style.display = "none"));
+
+        // Remove active class from all tab buttons
+        const tabButtons = document.querySelectorAll(".tab-button");
+        tabButtons.forEach((button) => button.classList.remove("active"));
+
+        // Show selected tab panel
+        document.getElementById(tabName + "-tab").style.display = "block";
+
+        // Add active class to clicked button
+        event.target.classList.add("active");
+      }
+    </script>
   </body>
 </html>
