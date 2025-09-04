@@ -1,4 +1,7 @@
 from datetime import date
+import os
+import uuid
+from werkzeug.utils import secure_filename
 from flask import Flask, abort, render_template, redirect, url_for, flash, request
 from flask_bootstrap5 import Bootstrap
 from flask_ckeditor import CKEditor
@@ -10,13 +13,17 @@ from sqlalchemy import Integer, String, Text
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
 # Configure Flask-Login
-login_manager = LoginManager()
+login_manager = LoginManager()  
 login_manager.init_app(app)
 
 # Configure Gravatar (commented out due to compatibility issues)
@@ -51,6 +58,31 @@ def admin_only(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def save_uploaded_file(file, folder_name):
+    if file and allowed_file(file.filename):
+        # Generate unique filename
+        filename = secure_filename(file.filename)
+        unique_filename = f"{uuid.uuid4()}_{filename}"
+        
+        # Create folder if it doesn't exist
+        folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+        os.makedirs(folder_path, exist_ok=True)
+        
+        # Save file
+        file_path = os.path.join(folder_path, unique_filename)
+        file.save(file_path)
+        
+        # Return URL path for database storage
+        url_path = f"/static/uploads/{folder_name}/{unique_filename}"
+        return url_path
+    return None
 
 
 class User(UserMixin, db.Model):
@@ -167,11 +199,22 @@ def register():
 @admin_only
 def add_posts():
     if request.method == 'POST':
+        # Handle image upload
+        media_url = request.form.get('post_image', '')
+        
+        # Check if file was uploaded
+        if 'post_image_file' in request.files:
+            file = request.files['post_image_file']
+            if file.filename != '':
+                uploaded_path = save_uploaded_file(file, 'posts')
+                if uploaded_path:
+                    media_url = uploaded_path
+        
         new_post = Posts(
             artist_id=current_user.id,
             post_title=request.form['post_title'],
             description=request.form['description'],
-            media_url=request.form.get('post_image', ''),
+            media_url=media_url,
             created_at=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -185,12 +228,23 @@ def add_posts():
 @admin_only
 def add_products():
     if request.method == 'POST':
+        # Handle image upload
+        img_url = request.form.get('product_image', '')
+        
+        # Check if file was uploaded
+        if 'product_image_file' in request.files:
+            file = request.files['product_image_file']
+            if file.filename != '':
+                uploaded_path = save_uploaded_file(file, 'products')
+                if uploaded_path:
+                    img_url = uploaded_path
+        
         new_product = Product(
             artist_id=current_user.id,
             title=request.form['product_name'],
             description=request.form.get('description', ''),
             price=request.form['price'],
-            img_url=request.form.get('product_image', ''),
+            img_url=img_url,
             created_at=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_product)

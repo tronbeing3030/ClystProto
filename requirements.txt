@@ -1,10 +1,10 @@
 Flask==3.0.0
-Flask-Bootstrap5==0.1.0
-Flask-CKEditor==0.6.0
-Flask-Gravatar==1.0.2
+Flask-Bootstrap5==0.1.dev1
+Flask-CKEditor==1.0.0
+Flask-Gravatar==0.5.0
 Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
-SQLAlchemy==2.0.23
+SQLAlchemy==2.0.38
 Werkzeug==3.0.1
 
 
