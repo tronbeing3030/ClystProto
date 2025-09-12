@@ -247,54 +247,46 @@
         <div class="logo"><i class="fas fa-palette"></i> Clyst</div>
         <ul class="nav-menu">
           <li class="nav-item">
-            <a href="{{ url_for('home') }}" class="nav-link">
-              <i class="fas fa-home"></i>
-              Home
-            </a>
+            <a href="{{ url_for('home') }}" class="nav-link"
+              ><i class="fas fa-home"></i>Home</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('products_page') }}" class="nav-link">
-              <i class="fas fa-store"></i>
-              Marketplace
-            </a>
+            <a href="{{ url_for('products_page') }}" class="nav-link"
+              ><i class="fas fa-store"></i>Marketplace</a
+            >
           </li>
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a href="{{ url_for('add_posts') }}" class="nav-link active">
-              <i class="fas fa-plus-circle"></i>
-              Create Post
-            </a>
+            <a href="{{ url_for('add_posts') }}" class="nav-link active"
+              ><i class="fas fa-plus-circle"></i>Create Post</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('add_products') }}" class="nav-link">
-              <i class="fas fa-plus-square"></i>
-              Add Product
-            </a>
+            <a href="{{ url_for('add_products') }}" class="nav-link"
+              ><i class="fas fa-plus-square"></i>Add Product</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('profile') }}" class="nav-link">
-              <i class="fas fa-user"></i>
-              Profile
-            </a>
+            <a href="{{ url_for('profile') }}" class="nav-link"
+              ><i class="fas fa-user"></i>Profile</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('logout') }}" class="nav-link">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </a>
+            <a href="{{ url_for('logout') }}" class="nav-link"
+              ><i class="fas fa-sign-out-alt"></i>Logout</a
+            >
           </li>
           {% else %}
           <li class="nav-item">
-            <a href="{{ url_for('login') }}" class="nav-link">
-              <i class="fas fa-sign-in-alt"></i>
-              Login
-            </a>
+            <a href="{{ url_for('login') }}" class="nav-link"
+              ><i class="fas fa-sign-in-alt"></i>Login</a
+            >
           </li>
           <li class="nav-item">
-            <a href="{{ url_for('register') }}" class="nav-link">
-              <i class="fas fa-user-plus"></i>
-              Register
-            </a>
+            <a href="{{ url_for('register') }}" class="nav-link"
+              ><i class="fas fa-user-plus"></i>Register</a
+            >
           </li>
           {% endif %}
         </ul>
@@ -347,7 +339,7 @@
 
               <div class="form-group">
                 <label for="post_image" class="form-label">
-                  <i class="fas fa-image"></i> Image URL (Optional)
+                  <i class="fas fa-image"></i> Image URL
                 </label>
                 <input
                   type="url"
@@ -363,7 +355,7 @@
 
               <div class="form-group">
                 <label for="post_image_file" class="form-label">
-                  <i class="fas fa-upload"></i> Upload Image (Optional)
+                  <i class="fas fa-upload"></i> Upload Image
                 </label>
                 <input
                   type="file"
@@ -375,6 +367,29 @@
                 <div class="form-help">
                   Upload an image from your device (JPG, PNG, GIF, WebP)
                 </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label"
+                  ><i class="fas fa-magic"></i> Generate with AI</label
+                >
+                <input
+                  type="text"
+                  id="ai_prompt"
+                  class="form-input"
+                  placeholder="Optional prompt to guide AI (e.g., style, theme)"
+                />
+                <div class="form-actions form-actions-ai">
+                  <button
+                    type="button"
+                    id="generate_ai"
+                    class="btn btn-secondary"
+                  >
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    Generate Suggestions
+                  </button>
+                </div>
+                <div id="ai_suggestions" class="ai-suggestions"></div>
               </div>
 
               <div class="form-actions">
@@ -390,6 +405,13 @@
             </form>
 
             <script>
+              function hasImageSelected() {
+                const url = document.getElementById("post_image").value.trim();
+                const file =
+                  document.getElementById("post_image_file").files[0];
+                return (url && url.length > 0) || !!file;
+              }
+
               // Debug file upload
               document
                 .getElementById("post_image_file")
@@ -402,11 +424,18 @@
                   }
                 });
 
-              // Debug form submission
+              // Enforce image presence & debug form submission
               document
                 .querySelector("form")
                 .addEventListener("submit", function (e) {
                   console.log("Form submitting...");
+                  if (!hasImageSelected()) {
+                    e.preventDefault();
+                    alert(
+                      "Please provide an image URL or upload an image before submitting."
+                    );
+                    return;
+                  }
                   const fileInput = document.getElementById("post_image_file");
                   if (fileInput.files[0]) {
                     console.log(
@@ -415,6 +444,101 @@
                     );
                   } else {
                     console.log("No file selected");
+                  }
+                });
+
+              // AI generation logic
+              document
+                .getElementById("generate_ai")
+                .addEventListener("click", async function () {
+                  if (!hasImageSelected()) {
+                    alert(
+                      "Please provide an image URL or upload an image to generate suggestions."
+                    );
+                    return;
+                  }
+
+                  const suggestionsDiv =
+                    document.getElementById("ai_suggestions");
+                  suggestionsDiv.innerHTML = "Generating suggestions...";
+
+                  const imageUrl = document
+                    .getElementById("post_image")
+                    .value.trim();
+                  let payload = {
+                    type: "post",
+                    prompt: document.getElementById("ai_prompt").value.trim(),
+                    description: document
+                      .getElementById("description")
+                      .value.trim(),
+                    image_url: imageUrl,
+                  };
+
+                  // If file selected, we can still send only URL context for now. Server stub doesn't accept multipart.
+                  // Now: also send base64 if a local file is selected.
+                  const file =
+                    document.getElementById("post_image_file").files[0];
+                  if (!imageUrl && file) {
+                    const b64 = await new Promise((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.onload = () =>
+                        resolve(reader.result.split(",")[1]);
+                      reader.onerror = reject;
+                      reader.readAsDataURL(file);
+                    });
+                    payload.image_base64 = b64;
+                    payload.image_mime = file.type || "image/jpeg";
+                  }
+
+                  try {
+                    const res = await fetch("/api/generate_copy", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(payload),
+                    });
+                    const data = await res.json();
+                    if (!data.ok) {
+                      suggestionsDiv.innerHTML = `<div style="color:#c62828;">${
+                        data.error || "Failed to generate suggestions"
+                      }</div>`;
+                      return;
+                    }
+                    const items = data.suggestions || [];
+                    suggestionsDiv.innerHTML = items
+                      .map(
+                        (s, idx) => `
+                    <div style="border:1px solid #e9ecef; border-radius:8px; padding:12px; margin-bottom:8px;">
+                      <div style="font-weight:600; margin-bottom:6px;">Suggestion ${
+                        idx + 1
+                      }</div>
+                      <div style="margin-bottom:6px;"><strong>Title:</strong> ${
+                        s.title
+                      }</div>
+                      <div style="margin-bottom:10px;"><strong>Description:</strong> ${
+                        s.description
+                      }</div>
+                      <button type="button" class="btn btn-primary" data-idx="${idx}">Use this</button>
+                    </div>
+                  `
+                      )
+                      .join("");
+
+                    // Attach handlers
+                    Array.from(
+                      suggestionsDiv.querySelectorAll("button[data-idx]")
+                    ).forEach((btn) => {
+                      btn.addEventListener("click", () => {
+                        const i = parseInt(btn.getAttribute("data-idx"));
+                        const chosen = items[i];
+                        document.getElementById("post_title").value =
+                          chosen.title;
+                        document.getElementById("description").value =
+                          chosen.description;
+                      });
+                    });
+                  } catch (err) {
+                    console.error(err);
+                    suggestionsDiv.innerHTML = `<div style="color:#c62828;">Error generating suggestions.</div>`;
                   }
                 });
             </script>
