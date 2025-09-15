@@ -1,0 +1,53 @@
+/* Common styles for Clyst application */
+
+/* Flash message styles */
+.flash-message {
+	color: red;
+	margin: 10px 0;
+	padding: 8px;
+	border-radius: 4px;
+}
+
+/* Form action styles */
+.form-actions-ai {
+	justify-content: flex-start;
+	margin-top: 12px;
+}
+
+.ai-suggestions {
+	margin-top: 12px;
+}
+
+/* Navigation styles */
+.nav-menu {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.nav-item {
+	margin: 0;
+}
+
+.nav-link {
+	display: block;
+	padding: 10px 15px;
+	text-decoration: none;
+	color: inherit;
+}
+
+.nav-link:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Logo styles */
+.logo {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding: 15px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo i {
+	margin-right: 8px;
+}

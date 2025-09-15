@@ -1,20 +1,574 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Clyst</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clyst - Add Product</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #fafafa;
+        color: #262626;
+      }
+
+      .container {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background: white;
+        border-right: 1px solid #dbdbdb;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: #262626;
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 10px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #262626;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+      }
+
+      .nav-link:hover {
+        background-color: #f8f9fa;
+      }
+
+      .nav-link i {
+        margin-right: 12px;
+        width: 20px;
+      }
+
+      .nav-link.active {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      /* Form Container */
+      .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-header {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+
+      .form-header h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .form-header p {
+        color: #8e8e8e;
+        font-size: 16px;
+      }
+
+      .form-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 32px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        color: #262626;
+        margin-bottom: 8px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+      }
+
+      .form-input[type="file"] {
+        padding: 8px 12px;
+        background: white;
+        border: 2px dashed #e9ecef;
+        cursor: pointer;
+      }
+
+      .form-input[type="file"]:hover {
+        border-color: #667eea;
+        background: #f8f9fa;
+      }
+
+      .form-textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 120px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+      }
+
+      .form-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+      }
+
+      .form-help {
+        font-size: 14px;
+        color: #8e8e8e;
+        margin-top: 4px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 32px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border-radius: 24px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #262626;
+        border: 1px solid #e9ecef;
+      }
+
+      .btn-secondary:hover {
+        background: #e9ecef;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .form-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Add Products</h1>
-<!-- For adding products -->
-    <form action="{{ url_for('add_products') }}" method="POST">
-      <label>Product Name</label>
-      <input name="product_name" type="text" required/>
-      <label>Price</label>
-      <input name="price" type="text" required/>
-      <label>Add Image</label>
-      <input name="product_image" type="text" />
-      <button type="submit">Add Product</button>
-    </form>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo"><i class="fas fa-palette"></i> Clyst</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="{{ url_for('home') }}" class="nav-link"
+              ><i class="fas fa-home"></i>Home</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('products_page') }}" class="nav-link"
+              ><i class="fas fa-store"></i>Marketplace</a
+            >
+          </li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{{ url_for('add_posts') }}" class="nav-link"
+              ><i class="fas fa-plus-circle"></i>Create Post</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('add_products') }}" class="nav-link active"
+              ><i class="fas fa-plus-square"></i>Add Product</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('profile') }}" class="nav-link"
+              ><i class="fas fa-user"></i>Profile</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('logout') }}" class="nav-link"
+              ><i class="fas fa-sign-out-alt"></i>Logout</a
+            >
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}" class="nav-link"
+              ><i class="fas fa-sign-in-alt"></i>Login</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('register') }}" class="nav-link"
+              ><i class="fas fa-user-plus"></i>Register</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="form-container">
+          <div class="form-header">
+            <h1><i class="fas fa-plus-square"></i> Add New Product</h1>
+            <p>Sell your artwork in the marketplace</p>
+          </div>
+
+          <div class="form-card">
+            <form
+              action="{{ url_for('add_products') }}"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <div class="form-group">
+                <label for="product_name" class="form-label">
+                  <i class="fas fa-tag"></i> Product Name
+                </label>
+                <input
+                  type="text"
+                  id="product_name"
+                  name="product_name"
+                  class="form-input"
+                  placeholder="Enter the name of your artwork..."
+                  required
+                />
+                <div class="form-help">
+                  Choose a descriptive name for your product
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="price" class="form-label">
+                  <i class="fas fa-rupee-sign"></i> Price (Rs.)
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  class="form-input"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  required
+                />
+                <div class="form-help">Set a fair price for your artwork</div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="form-label">
+                  <i class="fas fa-align-left"></i> Description (Optional)
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  class="form-textarea"
+                  placeholder="Describe your artwork, materials used, dimensions, etc..."
+                ></textarea>
+                <div class="form-help">
+                  Provide details about your artwork to help buyers
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="product_image" class="form-label">
+                  <i class="fas fa-image"></i> Image URL
+                </label>
+                <input
+                  type="url"
+                  id="product_image"
+                  name="product_image"
+                  class="form-input"
+                  placeholder="https://example.com/your-product-image.jpg"
+                />
+                <div class="form-help">
+                  Add a high-quality image of your artwork
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="product_image_file" class="form-label">
+                  <i class="fas fa-upload"></i> Upload Image
+                </label>
+                <input
+                  type="file"
+                  id="product_image_file"
+                  name="product_image_file"
+                  class="form-input"
+                  accept="image/*"
+                />
+                <div class="form-help">
+                  Upload an image from your device (JPG, PNG, GIF, WebP)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label"
+                  ><i class="fas fa-magic"></i> Generate with AI</label
+                >
+                <input
+                  type="text"
+                  id="ai_prompt"
+                  class="form-input"
+                  placeholder="Optional prompt to guide AI (e.g., target buyer, style)"
+                />
+                <div class="form-actions form-actions-ai">
+                  <button
+                    type="button"
+                    id="generate_ai"
+                    class="btn btn-secondary"
+                  >
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    Generate Suggestions
+                  </button>
+                </div>
+                <div id="ai_suggestions" class="ai-suggestions"></div>
+              </div>
+
+              <div class="form-actions">
+                <a
+                  href="{{ url_for('products_page') }}"
+                  class="btn btn-secondary"
+                >
+                  <i class="fas fa-times"></i>
+                  Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-plus"></i>
+                  Add Product
+                </button>
+              </div>
+            </form>
+
+            <script>
+              function hasImageSelected() {
+                const url = document
+                  .getElementById("product_image")
+                  .value.trim();
+                const file =
+                  document.getElementById("product_image_file").files[0];
+                return (url && url.length > 0) || !!file;
+              }
+
+              // Debug file upload
+              document
+                .getElementById("product_image_file")
+                .addEventListener("change", function (e) {
+                  console.log("File selected:", e.target.files[0]);
+                  if (e.target.files[0]) {
+                    console.log("File name:", e.target.files[0].name);
+                    console.log("File size:", e.target.files[0].size);
+                    console.log("File type:", e.target.files[0].type);
+                  }
+                });
+
+              // Enforce image presence & debug form submission
+              document
+                .querySelector("form")
+                .addEventListener("submit", function (e) {
+                  console.log("Form submitting...");
+                  if (!hasImageSelected()) {
+                    e.preventDefault();
+                    alert(
+                      "Please provide an image URL or upload an image before submitting."
+                    );
+                    return;
+                  }
+                  const fileInput =
+                    document.getElementById("product_image_file");
+                  if (fileInput.files[0]) {
+                    console.log(
+                      "File being submitted:",
+                      fileInput.files[0].name
+                    );
+                  } else {
+                    console.log("No file selected");
+                  }
+                });
+
+              // AI generation logic
+              document
+                .getElementById("generate_ai")
+                .addEventListener("click", async function () {
+                  if (!hasImageSelected()) {
+                    alert(
+                      "Please provide an image URL or upload an image to generate suggestions."
+                    );
+                    return;
+                  }
+
+                  const suggestionsDiv =
+                    document.getElementById("ai_suggestions");
+                  suggestionsDiv.innerHTML = "Generating suggestions...";
+
+                  const imageUrl = document
+                    .getElementById("product_image")
+                    .value.trim();
+                  const payload = {
+                    type: "product",
+                    prompt: document.getElementById("ai_prompt").value.trim(),
+                    description: document
+                      .getElementById("description")
+                      .value.trim(),
+                    image_url: imageUrl,
+                  };
+
+                  // Include base64 if local file is selected and no URL
+                  const file =
+                    document.getElementById("product_image_file").files[0];
+                  if (!imageUrl && file) {
+                    const b64 = await new Promise((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.onload = () =>
+                        resolve(reader.result.split(",")[1]);
+                      reader.onerror = reject;
+                      reader.readAsDataURL(file);
+                    });
+                    payload.image_base64 = b64;
+                    payload.image_mime = file.type || "image/jpeg";
+                  }
+
+                  try {
+                    const res = await fetch("/api/generate_copy", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(payload),
+                    });
+                    const data = await res.json();
+                    if (!data.ok) {
+                      suggestionsDiv.innerHTML = `<div style="color:#c62828;">${
+                        data.error || "Failed to generate suggestions"
+                      }</div>`;
+                      return;
+                    }
+                    const items = data.suggestions || [];
+                    suggestionsDiv.innerHTML = items
+                      .map(
+                        (s, idx) => `
+                    <div style=\"border:1px solid #e9ecef; border-radius:8px; padding:12px; margin-bottom:8px;\">
+                      <div style=\"font-weight:600; margin-bottom:6px;\">Suggestion ${
+                        idx + 1
+                      }</div>
+                      <div style=\"margin-bottom:6px;\"><strong>Title:</strong> ${
+                        s.title
+                      }</div>
+                      <div style=\"margin-bottom:10px;\"><strong>Description:</strong> ${
+                        s.description
+                      }</div>
+                      <button type=\"button\" class=\"btn btn-primary\" data-idx=\"${idx}\">Use this</button>
+                    </div>
+                  `
+                      )
+                      .join("");
+
+                    // Attach handlers
+                    Array.from(
+                      suggestionsDiv.querySelectorAll("button[data-idx]")
+                    ).forEach((btn) => {
+                      btn.addEventListener("click", () => {
+                        const i = parseInt(btn.getAttribute("data-idx"));
+                        const chosen = items[i];
+                        document.getElementById("product_name").value =
+                          chosen.title;
+                        const descEl = document.getElementById("description");
+                        if (descEl) descEl.value = chosen.description;
+                      });
+                    });
+                  } catch (err) {
+                    console.error(err);
+                    suggestionsDiv.innerHTML = `<div style=\"color:#c62828;\">Error generating suggestions.</div>`;
+                  }
+                });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
