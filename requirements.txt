@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 google-generativeai>=0.7.0
 requests>=2.31.0
 Flask==3.0.0
@@ -11,3 +12,22 @@ Werkzeug==3.0.1
 
 # Load env vars from .env
 python-dotenv>=1.0.1
+=======
+google-generativeai>=0.7.0
+requests>=2.31.0
+Flask==3.0.0
+Flask-Bootstrap5==0.1.dev1
+Flask-CKEditor==1.0.0
+Flask-Gravatar==0.5.0
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.38
+Werkzeug==3.0.1
+
+# Load env vars from .env
+python-dotenv>=1.0.1
+
+
+
+
+>>>>>>> 679d9151956f03bcdd1188e0b082713fa5dfc135
