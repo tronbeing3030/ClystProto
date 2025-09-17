@@ -78,8 +78,6 @@
     }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
         background-color: #fafafa;
         color: #262626;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: var(--bg); margin: 0;
@@ -154,11 +152,12 @@
       /* Post Card */
       .post-card {
         background: white;
-        border-radius: 12px;
+        border-radius: .2em;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-top: 24px;
         overflow: hidden;
-        width: 60%;
+        width: 100%;
+        max-width: 600px;
       }
 
       .post-header {
@@ -209,7 +208,7 @@
         background: none;
         border: none;
         padding: 8px;
-        border-radius: 6px;
+        border-radius: .2em;
         cursor: pointer;
         color: #8e8e8e;
         transition: all 0.2s;
@@ -243,6 +242,12 @@
 
       .post-content {
         padding: 16px;
+      }
+
+      .title{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .post-title {
@@ -279,6 +284,30 @@
 
       .view-artisan-btn:hover {
         opacity: 0.9;
+        transform: translateY(-1px);
+      }
+      
+      .say-aloud-btn{
+        /* position: absolute;
+        top: 10px;
+        left: 10px; */
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: .2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .say-aloud-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
         transform: translateY(-1px);
       }
 
@@ -402,7 +431,15 @@
           </div>
 
           <div class="post-content">
+            <div class="title">
             <h3 class="post-title">{{ post.post_title }}</h3>
+            <button
+                  class="btn say-aloud-btn"
+                  onclick="sayAloud({title: '{{ post.post_title }}', artist: '{{ post.artist.name }}', price: '{{ post.price }}', description: '{{ post.description | default('No description available') }}' })"
+                  title="Say Aloud"
+                >
+                  <i class="fa-solid fa-volume-high"></i>
+                </button></div>
             <p class="post-description">{{ post.description }}</p>
           </div>
 
@@ -419,7 +456,7 @@
           <div class="post-footer">
             <a
               href="{{ url_for('view_profile', user_id=post.artist_id) }}"
-              style="padding:8px 18px; text-decoration: none; border:none; border-radius:6px; background:#111; color:#fff; cursor:pointer;"
+              style="padding:8px 18px; text-decoration: none; border:none; border-radius:.2em; background:#111; color:#fff; cursor:pointer;"
             >
               View Artisan
             </a>
@@ -450,25 +487,6 @@
     {% endif %}
 
   <script>
-    function toggleMenu(e){
-      e?.stopPropagation?.();
-      const menu = document.getElementById("mobileMenu");
-      const now = menu.style.display === "flex" ? "none" : "flex";
-      menu.style.display = now;
-      if(now === "flex") document.getElementById("searchBelow").classList.remove("open");
-    }
-
-    function toggleSearch(){
-      const bar = document.getElementById("searchBelow");
-      bar.classList.toggle("open");
-      const menu = document.getElementById("mobileMenu");
-      if(menu.style.display === "flex") menu.style.display = "none";
-      if(bar.classList.contains("open")){
-        requestAnimationFrame(()=> document.getElementById("globalSearchInput").focus());
-      }
-    }
-  </script>
-  <script>
   function toggleMenu(e){
     e?.stopPropagation?.();
     const menu = document.getElementById("mobileMenu");
@@ -498,6 +516,12 @@
       }
     });
   });
+
+  function sayAloud(text) {
+  const message = new SpeechSynthesisUtterance();
+  message.text = `${text.artist}'s suggestion/post titled ${text.title} says: ${text.description}.`;
+  window.speechSynthesis.speak(message); // Start speaking
+}
 </script>
   </body>
 </html>

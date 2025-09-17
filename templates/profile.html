@@ -15,92 +15,106 @@
         box-sizing: border-box;
       }
 
+      :root{
+      --nav-pad-y: 10px;
+      --nav-pad-x: 20px;
+      --gap: 20px;
+      --accent: #111;
+      --muted: #555;
+      --bg: #f5f5f5;
+      --card: #fff;
+    }
+
+      nav#topNav{ position: sticky; top:0; z-index:1000; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); padding: var(--nav-pad-y) var(--nav-pad-x); display: grid; grid-template-columns: auto 1fr auto auto; align-items:center; column-gap: var(--gap);}
+    .nav-left{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:20px; color:var(--accent);}
+    .hamburger{ display:none; flex-direction:column; gap:5px; cursor:pointer; }
+    .hamburger span{ width:24px; height:2px; background:var(--accent); border-radius:2px; display:block; }
+    .nav-center{ grid-column:2; justify-self:center; display:flex; gap:40px;}
+    .nav-center a{ text-decoration:none; color:#555; font-size:16px; padding-bottom:3px; transition:color .2s, border-bottom-color .2s; border-bottom:2px solid transparent;}
+    .nav-center a:hover{ color:#000; }
+    .nav-center a.active{ color:#000; font-weight:600; border-bottom-color:#111; }
+    .search-box{ display:none; }
+    .nav-actions{ grid-column:4; justify-self:end; display:flex; align-items:center; gap:12px; }
+    .search-icon{ width:38px; height:38px; border-radius:50%; background:#f0f0f0; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:background .3s;}
+    .search-icon:hover{ background:#ddd; }
+    .search-icon svg{ width:18px; height:18px; fill:#111; }
+    .profile-btn{ width:38px; height:38px; border-radius:50%; background:#111; color:#fff; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:background .2s;}
+    .profile-btn:hover{ background:#333; }
+    .profile-btn svg{ width:20px; height:20px; fill:#fff; }
+    .search-below{ display:none; justify-content:center; align-items:center; background:#fff; border-bottom:1px solid #e9e9e9; padding:12px var(--nav-pad-x); z-index: 900;}
+    .search-below.open{ display:flex; animation: slideDown .25s ease;background: none; border: none;}
+    .search-pill{ width: min(720px, 92vw); background:#ffffff; border-radius: 28px; padding: 6px 10px 6px 14px; display:flex; align-items:center; gap:10px; box-shadow: 0 6px 18px rgba(0,0,0,.08); border:1px solid #e6e6e6;}
+    .search-pill input{ flex:1; border:none; background:transparent; padding:10px 4px; font-size:15px; outline:none;}
+    .search-close{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#444; transition: background .2s;}
+    .search-close:hover{ background:#e1e1e1; }
+    @keyframes slideDown{ from{ transform: translateY(-8px); opacity: 0; } to{ transform: translateY(0); opacity: 1; } }
+    .mobile-menu{ display:none; flex-direction:column; position: sticky; background:#fff; padding:10px var(--nav-pad-x); box-shadow:0 2px 6px rgba(0,0,0,.05);}
+    .mobile-menu a{ text-decoration:none; color:#333; padding:10px 0; font-size:15px; border-bottom:1px dashed #eee;}
+    .mobile-menu a:last-child{ border-bottom:none; }
+    .mobile-menu a.active{ font-weight:600; color:#000; }
+    .post{ display:flex; justify-content:space-between; align-items:flex-start; gap:30px; padding:30px; margin:40px auto; max-width:1000px; background:var(--card); border-radius:14px; border:1px solid #eee; box-shadow:0 4px 12px rgba(0,0,0,.08); transition:transform .3s, box-shadow .3s;}
+    .post:hover{ transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,.12); }
+    .post-info{ flex:1; max-width:360px; }
+    .post-header{ text-transform: capitalize; }
+    .item-title{ font-size:22px; font-weight:600; margin:6px 0 14px; }
+    .item-desc{ font-size:15px; line-height:1.5; color:#444; margin-bottom:16px; }
+    .post-image{ flex:1; display:flex; justify-content:flex-end; }
+    .post-image img{ width:100%; max-width:420px; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid #ddd; }
+    .fab{ position:fixed; bottom:60px; right:40px; width:55px; height:55px; border-radius:50%; text-decoration: none; background:#111; color:#fff; font-size:28px; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 10px rgba(0,0,0,.2); cursor:pointer; transition:background .2s, transform .2s; z-index:200;}
+    .fab:hover{ background:#333; transform:scale(1.1); }
+    .bottom-nav{ display:none; position:fixed; bottom:0; left:0; width:100%; background:#fff; box-shadow:0 -2px 6px rgba(0,0,0,.1); justify-content:space-around; align-items:center; padding:6px 0; z-index:300;}
+    .bottom-nav button{ background:none; border:none; cursor:pointer; font-size:20px; display:flex; justify-content:center; align-items:center;}
+    .bottom-nav .plus-btn{ width:45px; height:45px; border-radius:50%; background:#111; color:#fff; font-size:24px; display:flex; justify-content:center; align-items:center; box-shadow:0 3px 8px rgba(0,0,0,.2); margin:0 10px;}
+    @media (max-width: 768px){
+      nav#topNav{ grid-template-columns: auto 1fr auto; column-gap: 12px;}
+      .hamburger{ display:flex; }
+      .nav-center{ display:none; }
+      .post{ flex-direction:column; padding:20px; margin:20px auto; }
+      .post-info{ max-width:100%; }
+      .post-image{ justify-content:center; }
+      .fab{ display:none; }
+      .bottom-nav{ display:flex; }
+      .search-pill{ width: calc(100vw - 32px); }
+    }
+
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          sans-serif;
         background-color: #fafafa;
         color: #262626;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: var(--bg); margin: 0;
       }
 
       .container {
         display: flex;
-        max-width: 1200px;
+        justify-content: center ;
         margin: 0 auto;
         min-height: 100vh;
-      }
-
-      /* Sidebar */
-      .sidebar {
-        width: 250px;
-        background: white;
-        border-right: 1px solid #dbdbdb;
-        padding: 20px;
-        position: fixed;
-        height: 100vh;
-        overflow-y: auto;
-      }
-
-      .logo {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 30px;
-        color: #262626;
-      }
-
-      .nav-menu {
-        list-style: none;
-      }
-
-      .nav-item {
-        margin-bottom: 10px;
-      }
-
-      .nav-link {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        text-decoration: none;
-        color: #262626;
-        border-radius: 8px;
-        transition: background-color 0.2s;
-      }
-
-      .nav-link:hover {
-        background-color: #f8f9fa;
-      }
-
-      .nav-link i {
-        margin-right: 12px;
-        width: 20px;
-      }
-
-      .nav-link.active {
-        background-color: #e3f2fd;
-        color: #1976d2;
+        padding: 0;
       }
 
       /* Main Content */
       .main-content {
         flex: 1;
-        margin-left: 250px;
         padding: 20px;
+        max-width: 1000px;
       }
 
       /* Profile Header */
       .profile-header {
+        display: flex;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 0.2em;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         padding: 40px;
         margin-bottom: 24px;
         text-align: center;
+        flex-direction: column;
       }
 
       .profile-avatar {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        background: #111;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -115,6 +129,7 @@
         font-weight: 600;
         color: #262626;
         margin-bottom: 8px;
+        text-transform: capitalize;
       }
 
       .profile-info {
@@ -151,7 +166,7 @@
       /* Content Tabs */
       .content-tabs {
         background: white;
-        border-radius: 12px;
+        border-radius: .2em;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 24px;
       }
@@ -163,7 +178,7 @@
 
       .tab-button {
         flex: 1;
-        padding: 16px;
+        padding: 16px 16px 10px 16px;
         background: none;
         border: none;
         font-size: 16px;
@@ -171,11 +186,12 @@
         color: #8e8e8e;
         cursor: pointer;
         transition: all 0.2s;
+        font-weight: 600;
       }
 
       .tab-button.active {
         color: #262626;
-        border-bottom: 2px solid #667eea;
+        border-bottom: 2px solid #111;
       }
 
       .tab-content {
@@ -193,15 +209,31 @@
       .post-item,
       .product-item {
         background: white;
-        border-radius: 8px;
+        border-radius: .2em;
         overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         transition: transform 0.2s;
       }
 
       .post-item:hover,
       .product-item:hover {
         transform: translateY(-2px);
+      }
+
+      .post-item{
+        position: relative;
+      }
+
+      .post-delete-btn{
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ffffffd3;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #b52515;
+        transition: opacity 0.2s;
       }
 
       .item-image {
@@ -220,7 +252,7 @@
       }
 
       .item-content {
-        padding: 16px;
+        padding: 8px 16px 16px 16px;
       }
 
       .item-title {
@@ -240,35 +272,86 @@
       .item-price {
         font-size: 18px;
         font-weight: 700;
-        color: #28a745;
+        color: #25a18e;
       }
 
       .item-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .form-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        justify-content: flex-end;
         margin-top: 12px;
       }
 
       .btn {
-        padding: 6px 12px;
-        border-radius: 16px;
+        padding: 8px 16px;
+        border-radius: 20px;
         text-decoration: none;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 500;
         transition: all 0.2s;
         border: none;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
       }
 
       .btn-primary {
-        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        background: #111;
         color: white;
+        padding: 8px 16px;  
+        border-radius: .2em;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: transform 0.2s;
       }
 
       .btn-primary:hover {
+        opacity: 0.8;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        padding:8px 18px; 
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border:1px solid #63ddff; 
+        border-radius: .2em; 
+        background:#45ecff; 
+        color:#003b3e; 
+        cursor:pointer;
+        font-weight: 600;
+      }
+
+      .btn-secondary:hover {
+        opacity: 0.5;
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        width: 35px;
+        height: 35px;
+        color: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: .2em;
+      }
+
+      .btn-danger:hover {
+        background-color: #ffd8d8;
+        color: #b52515;
+        transform: translateY(-1px);
       }
 
       /* Responsive */
@@ -303,65 +386,55 @@
     </style>
   </head>
   <body>
-    <div class="container">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="logo"><i class="fas fa-palette"></i> Clyst</div>
-        <ul class="nav-menu">
-          <li class="nav-item">
-            <a href="{{ url_for('home') }}" class="nav-link">
-              <i class="fas fa-home"></i>
-              Home
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('products_page') }}" class="nav-link">
-              <i class="fas fa-store"></i>
-              Marketplace
-            </a>
-          </li>
-          {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a href="{{ url_for('add_posts') }}" class="nav-link">
-              <i class="fas fa-plus-circle"></i>
-              Create Post
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('add_products') }}" class="nav-link">
-              <i class="fas fa-plus-square"></i>
-              Add Product
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('profile') }}" class="nav-link active">
-              <i class="fas fa-user"></i>
-              Profile
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('logout') }}" class="nav-link">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
-            </a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a href="{{ url_for('login') }}" class="nav-link">
-              <i class="fas fa-sign-in-alt"></i>
-              Login
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url_for('register') }}" class="nav-link">
-              <i class="fas fa-user-plus"></i>
-              Register
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
 
+
+    
+    <!-- ===== NAVBAR ===== -->
+  <nav id="topNav">
+    <div class="nav-left">
+      <div class="hamburger" onclick="toggleMenu(event)">
+        <span></span><span></span><span></span>
+      </div>
+      <a href="{{ url_for('home') }}" style="text-decoration:none; color:inherit;">Clyst</a>
+    </div>
+
+    <div class="nav-center" id="navLinks">
+      <a href="{{ url_for('home') }}">Community Feed</a>
+      <a href="{{ url_for('products_page') }}">Marketplace</a>
+    {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+    </div>
+
+    <div class="search-box" id="searchBox">
+      <input type="text" placeholder="Search..." />
+    </div>
+  </nav>
+
+  <!-- ===== SEARCH BELOW NAV ===== -->
+  <div id="searchBelow" class="search-below">
+    <div class="search-pill">
+      <input id="globalSearchInput" type="text" placeholder="Search..." />
+      <div class="search-close" onclick="toggleSearch()">✕</div>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="{{ url_for('home') }}">Community Feed</a>
+    <a href="{{ url_for('products_page') }}">Marketplace</a>
+    {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+    {% endif %}
+  </div>
+
+
+    <div class="container">
       <!-- Main Content -->
       <div class="main-content">
         <!-- Profile Header -->
@@ -378,47 +451,73 @@
 
           <div class="profile-info">
             <div class="info-item">
-              <div class="info-label">Posts</div>
               <div class="info-value">{{ posts|length }}</div>
+              <div class="info-label">Posts</div>
             </div>
             <div class="info-item">
-              <div class="info-label">Products</div>
               <div class="info-value">{{ products|length }}</div>
+              <div class="info-label">Products</div>
             </div>
             <div class="info-item">
-              <div class="info-label">Member Since</div>
               <div class="info-value">
                 {% if profile_user %} {{ profile_user.created_at }} {% else %}
                 {{ current_user.created_at }} {% endif %}
               </div>
+              <div class="info-label">Joined on</div>
             </div>
           </div>
 
           <div class="profile-bio">
-            {% if profile_user %} {% if profile_user.email %}
-            <p><strong>Email:</strong> {{ profile_user.email }}</p>
-            {% endif %} {% if profile_user.phone %}
-            <p><strong>Phone:</strong> {{ profile_user.phone }}</p>
-            {% endif %} {% if profile_user.location %}
-            <p><strong>Location:</strong> {{ profile_user.location }}</p>
-            {% endif %} {% else %} {% if current_user.email %}
-            <p><strong>Email:</strong> {{ current_user.email }}</p>
-            {% endif %} {% if current_user.phone %}
-            <p><strong>Phone:</strong> {{ current_user.phone }}</p>
-            {% endif %} {% if current_user.location %}
-            <p><strong>Location:</strong> {{ current_user.location }}</p>
-            {% endif %} {% endif %}
+            {% if profile_user %} 
+              {% if profile_user.email %}
+                <p><i class="fa-solid fa-envelope"></i> {{ profile_user.email }}</p>
+              {% endif %} 
+              {% if profile_user.phone %}
+                <p><i class="fa-solid fa-phone"></i> {{ profile_user.phone }}</p>
+              {% endif %} 
+              {% if profile_user.location %}
+                <p><i class="fa-solid fa-location-dot"></i> {{ profile_user.location }}</p>
+              {% endif %} 
+            {% else %} 
+              {% if current_user.email %}
+                <p><i class="fa-solid fa-envelope"></i> {{ current_user.email }}</p>
+              {% endif %} 
+              {% if current_user.phone %}
+                <p><i class="fa-solid fa-phone"></i> {{ current_user.phone }}</p>
+              {% endif %} 
+              {% if current_user.location %}
+                <p><i class="fa-solid fa-location-dot"></i> {{ current_user.location }}</p>
+              {% endif %} 
+            {% endif %}
           </div>
+          
+          <div class="form-actions">
+            {% if current_user.is_authenticated %}
+          <a
+            href="{{ url_for('add_posts') }}"
+            class="btn btn-secondary"
+          >
+            Add New Post
+          </a>
+          <a
+            href="{{ url_for('add_products') }}"
+            class="btn btn-secondary"
+          >
+            Add New Product
+          </a>
+            {% endif %}
+                </div>
         </div>
+        
 
         <!-- Content Tabs -->
         <div class="content-tabs">
           <div class="tab-nav">
             <button class="tab-button active" onclick="showTab('posts')">
-              <i class="fas fa-images"></i> Posts ({{ posts|length }})
+              Posts ({{ posts|length }})
             </button>
             <button class="tab-button" onclick="showTab('products')">
-              <i class="fas fa-store"></i> Products ({{ products|length }})
+              Products ({{ products|length }})
             </button>
           </div>
 
@@ -429,6 +528,15 @@
               <div class="posts-grid">
                 {% for post in posts %}
                 <div class="post-item">
+                  {% if current_user.is_authenticated and current_user.id == 1 %}
+                <button
+                  class="btn btn-danger post-delete-btn"
+                  onclick="if(confirm('Delete this post?')) window.location.href='{{ url_for('delete_posts', post_id=post.post_id) }}'"
+                  title="Delete Post"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+                {% endif %}
                   {% if post.media_url %}
                   <img
                     src="{{ post.media_url }}"
@@ -492,9 +600,19 @@
                         href="{{ url_for('product_buy', product_id=product.product_id) }}"
                         class="btn btn-primary"
                       >
-                        <i class="fas fa-shopping-cart"></i> View
+                        View
                       </a>
+                      {% if current_user.is_authenticated and current_user.id == 1 %}
+                <button
+                  class="btn btn-danger"
+                  onclick="if(confirm('Delete this product?')) window.location.href='{{ url_for('delete_products', product_id=product.product_id) }}'"
+                  title="Delete Product"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+                {% endif %}
                     </div>
+                    
                   </div>
                 </div>
                 {% endfor %}
@@ -513,6 +631,37 @@
     </div>
 
     <script>
+
+      function toggleMenu(e){
+    e?.stopPropagation?.();
+    const menu = document.getElementById("mobileMenu");
+    const now = menu.style.display === "flex" ? "none" : "flex";
+    menu.style.display = now;
+    if(now === "flex") document.getElementById("searchBelow").classList.remove("open");
+  }
+
+  function toggleSearch(){
+    const bar = document.getElementById("searchBelow");
+    bar.classList.toggle("open");
+    const menu = document.getElementById("mobileMenu");
+    if(menu.style.display === "flex") menu.style.display = "none";
+    if(bar.classList.contains("open")){
+      requestAnimationFrame(()=> document.getElementById("globalSearchInput").focus());
+    }
+  }
+
+  // Highlight active nav link
+  document.addEventListener("DOMContentLoaded", function() {
+    const path = window.location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-center a, .mobile-menu a').forEach(link => {
+      if (link.getAttribute('href') === path) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  });
+
       function showTab(tabName) {
         // Hide all tab panels
         const tabPanels = document.querySelectorAll(".tab-panel");

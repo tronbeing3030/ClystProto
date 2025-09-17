@@ -154,56 +154,6 @@
         flex-direction: column;
       }
 
-      /* Sidebar */
-      .sidebar {
-        width: 250px;
-        background: white;
-        border-right: 1px solid #dbdbdb;
-        padding: 20px;
-        position: fixed;
-        height: 100vh;
-        overflow-y: auto;
-      }
-
-      .logo {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 30px;
-        color: #262626;
-      }
-
-      .nav-menu {
-        list-style: none;
-      }
-
-      .nav-item {
-        margin-bottom: 10px;
-      }
-
-      .nav-link {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        text-decoration: none;
-        color: #262626;
-        border-radius: 8px;
-        transition: background-color 0.2s;
-      }
-
-      .nav-link:hover {
-        background-color: #f8f9fa;
-      }
-
-      .nav-link i {
-        margin-right: 12px;
-        width: 20px;
-      }
-
-      .nav-link.active {
-        background-color: #e3f2fd;
-        color: #1976d2;
-      }
-
       /* Main Content */
       .main-content {
         display: flex;
@@ -222,8 +172,9 @@
       }
 
       .product-card {
+        position: relative;
         background: white;
-        border-radius: 12px;
+        border-radius: .2em;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -233,6 +184,8 @@
         transform: translateY(-4px);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       }
+
+      
 
       .product-image {
         width: 100%;
@@ -294,7 +247,7 @@
 
       .btn {
         padding: 8px 16px;
-        border-radius: 20px;
+        border-radius: .2em;
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
@@ -326,7 +279,7 @@
         padding:8px 18px; 
         text-decoration: none; 
         border:1px solid #c4c4c4; 
-        border-radius:6px; 
+        border-radius: .2em; 
         background:#fff; 
         color:#111; 
         cursor:pointer;
@@ -350,6 +303,30 @@
       .btn-danger:hover {
         background-color: #ffd8d8;
         color: #b52515;
+      }
+      
+      .say-aloud-btn{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: .2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .say-aloud-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
       }
 
       /* Responsive */
@@ -451,6 +428,13 @@
         <div class="products-grid">
           {% for product in products %}
           <div class="product-card">
+            <button
+                  class="btn say-aloud-btn"
+                  onclick="sayAloud({title: '{{ product.title }}', artist: '{{ product.artist.name }}', price: '{{ product.price }}', description: '{{ product.description | default('No description available') }}' })"
+                  title="Say Aloud"
+                >
+                  <i class="fa-solid fa-volume-high"></i>
+                </button>
             {% if product.img_url %}
             <img
               src="{{ product.img_url }}"
@@ -480,7 +464,7 @@
                 <a
                   href="{{ url_for('product_buy', product_id=product.product_id) }}"
                   class="btn btn-primary"
-                  style="padding:8px 18px; text-decoration: none; border:none; border-radius:6px; background:#111; color:#fff; cursor:pointer;"
+                  style="padding:8px 18px; text-decoration: none; border:none; border-radius: .2em; background:#111; color:#fff; cursor:pointer;"
                 >
                   Buy Now
                 </a>
@@ -526,25 +510,6 @@
     <a href="{{ url_for('add_products') }}" class="fab">+</a>
     {% endif %}
 
-<script>
-    function toggleMenu(e){
-      e?.stopPropagation?.();
-      const menu = document.getElementById("mobileMenu");
-      const now = menu.style.display === "flex" ? "none" : "flex";
-      menu.style.display = now;
-      if(now === "flex") document.getElementById("searchBelow").classList.remove("open");
-    }
-
-    function toggleSearch(){
-      const bar = document.getElementById("searchBelow");
-      bar.classList.toggle("open");
-      const menu = document.getElementById("mobileMenu");
-      if(menu.style.display === "flex") menu.style.display = "none";
-      if(bar.classList.contains("open")){
-        requestAnimationFrame(()=> document.getElementById("globalSearchInput").focus());
-      }
-    }
-  </script>
   <script>
   function toggleMenu(e){
     e?.stopPropagation?.();
@@ -575,6 +540,12 @@
       }
     });
   });
+
+  function sayAloud(text) {
+  const message = new SpeechSynthesisUtterance();
+  message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
+  window.speechSynthesis.speak(message); // Start speaking
+}
 </script>
   </body>
 </html>
