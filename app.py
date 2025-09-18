@@ -625,6 +625,158 @@ def generate_copy():
         return jsonify({'ok': False, 'error': str(e)}), 500
 
 
+@app.route('/api/translate_listing', methods=['POST'])
+@login_required
+def translate_listing():
+    """
+    Translate a listing's title/description into a target language and suggest SEO phrases.
+    Uses Gemini if configured, otherwise returns a simple stubbed response.
+    Input JSON: { type: 'post'|'product', title: str, description: str, target_lang: 'hi'|'es'|'fr'|..., locale: str? }
+    Output JSON: { ok: True, title: str, description: str, seo_phrases: [str, ...] }
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        content_type = (data.get('type') or 'post').lower()
+        title = (data.get('title') or '').strip()
+        description = (data.get('description') or '').strip()
+        target_lang = (data.get('target_lang') or '').strip().lower()
+        locale = (data.get('locale') or '').strip().lower()
+        source_lang = (data.get('source_lang') or '').strip().lower()
+
+        if not target_lang:
+            return jsonify({'ok': False, 'error': 'target_lang is required'}), 400
+        if not (title or description):
+            return jsonify({'ok': False, 'error': 'Provide title or description to translate'}), 400
+
+        # Lightweight source language heuristic if not provided (supports many scripts)
+        def guess_lang(sample_text: str) -> str:
+            try:
+                s = sample_text or ''
+                if re.search(r"[\u0900-\u097F]", s):  # Devanagari (hi, mr, ne)
+                    return 'hi'
+                if re.search(r"[\u0980-\u09FF]", s):  # Bengali
+                    return 'bn'
+                if re.search(r"[\u0A00-\u0A7F]", s):  # Gurmukhi
+                    return 'pa'
+                if re.search(r"[\u0A80-\u0AFF]", s):  # Gujarati
+                    return 'gu'
+                if re.search(r"[\u0B00-\u0B7F]", s):  # Oriya/Odia
+                    return 'or'
+                if re.search(r"[\u0B80-\u0BFF]", s):  # Tamil
+                    return 'ta'
+                if re.search(r"[\u0C00-\u0C7F]", s):  # Telugu
+                    return 'te'
+                if re.search(r"[\u0C80-\u0CFF]", s):  # Kannada
+                    return 'kn'
+                if re.search(r"[\u0D00-\u0D7F]", s):  # Malayalam
+                    return 'ml'
+                if re.search(r"[\u0600-\u06FF]", s):  # Arabic script
+                    return 'ar'
+                if re.search(r"[\u3040-\u309F\u30A0-\u30FF]", s):  # Hiragana/Katakana
+                    return 'ja'
+                if re.search(r"[\u4E00-\u9FFF\u3400-\u4DBF]", s):  # CJK Han
+                    return 'zh'
+                if re.search(r"[\uAC00-\uD7AF]", s):  # Hangul
+                    return 'ko'
+                if re.search(r"[\u0400-\u04FF]", s):  # Cyrillic
+                    return 'ru'
+                if re.search(r"[\u0370-\u03FF]", s):  # Greek
+                    return 'el'
+                if re.search(r"[\u0590-\u05FF]", s):  # Hebrew
+                    return 'he'
+            except Exception:
+                pass
+            return ''
+
+        if not source_lang:
+            source_lang = guess_lang((title + "\n" + description).strip())
+
+        api_key = GEMINI_API_KEY
+        if genai and api_key and api_key != "your_gemini_api_key_here":
+            try:
+                genai.configure(api_key=api_key)  # type: ignore
+                model = genai.GenerativeModel(  # type: ignore
+                    model_name='gemini-1.5-flash',
+                    generation_config={
+                        'temperature': 0.3,
+                        'top_p': 0.8,
+                        'response_mime_type': 'application/json'
+                    }
+                )
+                instruction = (
+                    "You are a localization assistant for an art marketplace. "
+                    f"Translate from {source_lang or 'auto-detected'} to {target_lang}. "
+                    "Translate naturally and fluently while staying faithful to the original meaning. "
+                    "Do not add new information or marketing fluff. Preserve names and intent. "
+                    "If the source already matches the target language, return it as-is. "
+                    f"Translate the following {content_type} listing into the target language. "
+                    "Return ONLY JSON with keys: title, description, seo_phrases (array of 6 short phrases suitable for search/hashtags in the target locale). "
+                    "No emojis."
+                )
+                user_json = json.dumps({
+                    'title': title,
+                    'description': description,
+                    'target_lang': target_lang,
+                    'source_lang': source_lang,
+                    'locale': locale,
+                })
+                result = model.generate_content([instruction, f"INPUT:\n{user_json}"])
+                out_text = ''
+                try:
+                    out_text = (getattr(result, 'text', '') or '').strip()
+                except Exception:
+                    out_text = ''
+                if not out_text:
+                    try:
+                        for cand in getattr(result, 'candidates', []) or []:  # type: ignore[attr-defined]
+                            content = getattr(cand, 'content', None)
+                            for p in getattr(content, 'parts', []) or []:
+                                pt = getattr(p, 'text', None)
+                                if pt:
+                                    out_text += str(pt)
+                        out_text = out_text.strip()
+                    except Exception:
+                        out_text = ''
+                parsed = {}
+                try:
+                    candidate = out_text
+                    if '{' in out_text and '}' in out_text:
+                        candidate = out_text[out_text.find('{'): out_text.rfind('}') + 1]
+                    parsed = json.loads(candidate)
+                except Exception:
+                    parsed = {}
+                tr_title = str(parsed.get('title') or title).strip()
+                tr_desc = str(parsed.get('description') or description).strip()
+                seo_phrases = parsed.get('seo_phrases') or []
+                # Ensure list of strings
+                if not isinstance(seo_phrases, list):
+                    seo_phrases = []
+                seo_phrases = [str(s).strip() for s in seo_phrases if str(s).strip()]
+                return jsonify({'ok': True, 'title': tr_title, 'description': tr_desc, 'seo_phrases': seo_phrases[:8]})
+            except Exception as e:
+                return jsonify({'ok': False, 'error': f'Gemini error: {str(e)}'}), 500
+
+        # Fallback stub translation when Gemini not configured
+        # Simple placeholder to show multi-language UI works without external API.
+        lang_prefix = target_lang if target_lang else 'xx'
+        def stub_translate(text_in: str) -> str:
+            if not text_in:
+                return ''
+            return f"[{lang_prefix}] {text_in}"
+        tr_title = stub_translate(title)
+        tr_desc = stub_translate(description)
+        # Very basic seo generation from source words
+        base_words = []
+        base_words.extend((title or '').split())
+        base_words.extend((description or '').split())
+        base_words = [w.strip('#,.;:!()[]{}"'"'" ).lower() for w in base_words if len(w) > 3][:12]
+        seo_phrases = list({f"{lang_prefix}-{w}" for w in base_words})
+        seo_phrases = seo_phrases[:8]
+        return jsonify({'ok': True, 'title': tr_title, 'description': tr_desc, 'seo_phrases': seo_phrases})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
 @app.route("/delete_post")
 @login_required
 def delete_posts():
