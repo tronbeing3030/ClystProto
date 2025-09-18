@@ -384,7 +384,6 @@ def register():
 
 @app.route("/add", methods=["GET", "POST"])
 @login_required
-@admin_only
 def add_posts():
     if request.method == 'POST':
         # Handle image upload
@@ -418,7 +417,6 @@ def add_posts():
 
 @app.route("/add_products", methods=["GET", "POST"])
 @login_required
-@admin_only
 def add_products():
     if request.method == 'POST':
         # Handle image upload
@@ -629,7 +627,6 @@ def generate_copy():
 
 @app.route("/delete_post")
 @login_required
-@admin_only
 def delete_posts():
     post_id = request.args.get('post_id')
     post_to_delete = db.get_or_404(Posts, post_id)
@@ -640,7 +637,6 @@ def delete_posts():
 
 @app.route("/delete_product")
 @login_required
-@admin_only
 def delete_products():
     product_id = request.args.get('product_id')
     product_to_delete = db.get_or_404(Product, product_id)
