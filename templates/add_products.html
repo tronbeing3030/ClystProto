@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,7 +7,7 @@
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
-    />    
+    />
     <style>
       * {
         margin: 0;
@@ -16,70 +15,345 @@
         box-sizing: border-box;
       }
 
-       :root{
-      --nav-pad-y: 10px;
-      --nav-pad-x: 20px;
-      --gap: 20px;
-      --accent: #111;
-      --muted: #555;
-      --bg: #f5f5f5;
-      --card: #fff;
-    }
-
-    body {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; 
+      :root {
+        --nav-pad-y: 10px;
+        --nav-pad-x: 20px;
+        --gap: 20px;
+        --accent: #111;
+        --muted: #555;
+        --bg: #f5f5f5;
+        --card: #fff;
       }
 
-      nav#topNav{ position: sticky; top:0; z-index:1000; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); padding: var(--nav-pad-y) var(--nav-pad-x); display: grid; grid-template-columns: auto 1fr auto auto; align-items:center; column-gap: var(--gap);}
-    .nav-left{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:20px; color:var(--accent);}
-    .hamburger{ display:none; flex-direction:column; gap:5px; cursor:pointer; }
-    .hamburger span{ width:24px; height:2px; background:var(--accent); border-radius:2px; display:block; }
-    .nav-center{ grid-column:2; justify-self:center; display:flex; gap:40px;}
-    .nav-center a{ text-decoration:none; color:#555; font-size:16px; padding-bottom:3px; transition:color .2s, border-bottom-color .2s; border-bottom:2px solid transparent;}
-    .nav-center a:hover{ color:#000; }
-    .nav-center a.active{ color:#000; font-weight:600; border-bottom-color:#111; }
-    .search-box{ display:none; }
-    .nav-actions{ grid-column:4; justify-self:end; display:flex; align-items:center; gap:12px; }
-    .search-icon{ width:38px; height:38px; border-radius:50%; background:#f0f0f0; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:background .3s;}
-    .search-icon:hover{ background:#ddd; }
-    .search-icon svg{ width:18px; height:18px; fill:#111; }
-    .profile-btn{ width:38px; height:38px; border-radius:50%; background:#111; color:#fff; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:background .2s;}
-    .profile-btn:hover{ background:#333; }
-    .profile-btn svg{ width:20px; height:20px; fill:#fff; }
-    .search-below{ display:none; justify-content:center; align-items:center; background:#fff; border-bottom:1px solid #e9e9e9; padding:12px var(--nav-pad-x); z-index: 900;}
-    .search-below.open{ display:flex; animation: slideDown .25s ease;background: none; border: none;}
-    .search-pill{ width: min(720px, 92vw); background:#ffffff; border-radius: 28px; padding: 6px 10px 6px 14px; display:flex; align-items:center; gap:10px; box-shadow: 0 6px 18px rgba(0,0,0,.08); border:1px solid #e6e6e6;}
-    .search-pill input{ flex:1; border:none; background:transparent; padding:10px 4px; font-size:15px; outline:none;}
-    .search-close{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#444; transition: background .2s;}
-    .search-close:hover{ background:#e1e1e1; }
-    @keyframes slideDown{ from{ transform: translateY(-8px); opacity: 0; } to{ transform: translateY(0); opacity: 1; } }
-    .mobile-menu{ display:none; flex-direction:column; position: sticky; background:#fff; padding:10px var(--nav-pad-x); box-shadow:0 2px 6px rgba(0,0,0,.05);}
-    .mobile-menu a{ text-decoration:none; color:#333; padding:10px 0; font-size:15px; border-bottom:1px dashed #eee;}
-    .mobile-menu a:last-child{ border-bottom:none; }
-    .mobile-menu a.active{ font-weight:600; color:#000; }
-    .post{ display:flex; justify-content:space-between; align-items:flex-start; gap:30px; padding:30px; margin:40px auto; max-width:1000px; background:var(--card); border-radius:14px; border:1px solid #eee; box-shadow:0 4px 12px rgba(0,0,0,.08); transition:transform .3s, box-shadow .3s;}
-    .post:hover{ transform:translateY(-4px); box-shadow:0 6px 18px rgba(0,0,0,.12); }
-    .post-info{ flex:1; max-width:360px; }
-    .post-header{ text-transform: capitalize; }
-    .item-title{ font-size:22px; font-weight:600; margin:6px 0 14px; }
-    .item-desc{ font-size:15px; line-height:1.5; color:#444; margin-bottom:16px; }
-    .post-image{ flex:1; display:flex; justify-content:flex-end; }
-    .post-image img{ width:100%; max-width:420px; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid #ddd; }
-    .fab{ position:fixed; bottom:60px; right:40px; width:55px; height:55px; border-radius:50%; text-decoration: none; background:#111; color:#fff; font-size:28px; display:flex; justify-content:center; align-items:center; box-shadow:0 4px 10px rgba(0,0,0,.2); cursor:pointer; transition:background .2s, transform .2s; z-index:200;}
-    .fab:hover{ background:#333; transform:scale(1.1); }
-    .bottom-nav{ display:none; position:fixed; bottom:0; left:0; width:100%; background:#fff; box-shadow:0 -2px 6px rgba(0,0,0,.1); justify-content:space-around; align-items:center; padding:6px 0; z-index:300;}
-    .bottom-nav button{ background:none; border:none; cursor:pointer; font-size:20px; display:flex; justify-content:center; align-items:center;}
-    .bottom-nav .plus-btn{ width:45px; height:45px; border-radius:50%; background:#111; color:#fff; font-size:24px; display:flex; justify-content:center; align-items:center; box-shadow:0 3px 8px rgba(0,0,0,.2); margin:0 10px;}
-    @media (max-width: 768px){
-      nav#topNav{ grid-template-columns: auto 1fr auto; column-gap: 12px;}
-      .hamburger{ display:flex; }
-      .nav-center{ display:none; }
-      .post{ flex-direction:column; padding:20px; margin:20px auto; }
-      .post-info{ max-width:100%; }
-      .post-image{ justify-content:center; }
-      .fab{ display:none; }
-      .bottom-nav{ display:flex; }
-      .search-pill{ width: calc(100vw - 32px); }
-    }
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        margin: 0;
+      }
+
+      nav#topNav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        padding: var(--nav-pad-y) var(--nav-pad-x);
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        align-items: center;
+        column-gap: var(--gap);
+      }
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--accent);
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+      }
+      .hamburger span {
+        width: 24px;
+        height: 2px;
+        background: var(--accent);
+        border-radius: 2px;
+        display: block;
+      }
+      .nav-center {
+        grid-column: 2;
+        justify-self: center;
+        display: flex;
+        gap: 40px;
+      }
+      .nav-center a {
+        text-decoration: none;
+        color: #555;
+        font-size: 16px;
+        padding-bottom: 3px;
+        transition: color 0.2s, border-bottom-color 0.2s;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-center a:hover {
+        color: #000;
+      }
+      .nav-center a.active {
+        color: #000;
+        font-weight: 600;
+        border-bottom-color: #111;
+      }
+      .search-box {
+        display: none;
+      }
+      .nav-actions {
+        grid-column: 4;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .search-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .search-icon:hover {
+        background: #ddd;
+      }
+      .search-icon svg {
+        width: 18px;
+        height: 18px;
+        fill: #111;
+      }
+      .profile-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .profile-btn:hover {
+        background: #333;
+      }
+      .profile-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+      }
+      .search-below {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
+        border-bottom: 1px solid #e9e9e9;
+        padding: 12px var(--nav-pad-x);
+        z-index: 900;
+      }
+      .search-below.open {
+        display: flex;
+        animation: slideDown 0.25s ease;
+        background: none;
+        border: none;
+      }
+      .search-pill {
+        width: min(720px, 92vw);
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 6px 10px 6px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e6e6e6;
+      }
+      .search-pill input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px 4px;
+        font-size: 15px;
+        outline: none;
+      }
+      .search-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #444;
+        transition: background 0.2s;
+      }
+      .search-close:hover {
+        background: #e1e1e1;
+      }
+      @keyframes slideDown {
+        from {
+          transform: translateY(-8px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .mobile-menu {
+        display: none;
+        flex-direction: column;
+        position: sticky;
+        background: #fff;
+        padding: 10px var(--nav-pad-x);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .mobile-menu a {
+        text-decoration: none;
+        color: #333;
+        padding: 10px 0;
+        font-size: 15px;
+        border-bottom: 1px dashed #eee;
+      }
+      .mobile-menu a:last-child {
+        border-bottom: none;
+      }
+      .mobile-menu a.active {
+        font-weight: 600;
+        color: #000;
+      }
+      .post {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 30px;
+        padding: 30px;
+        margin: 40px auto;
+        max-width: 1000px;
+        background: var(--card);
+        border-radius: 14px;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .post:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      }
+      .post-info {
+        flex: 1;
+        max-width: 360px;
+      }
+      .post-header {
+        text-transform: capitalize;
+      }
+      .item-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 6px 0 14px;
+      }
+      .item-desc {
+        font-size: 15px;
+        line-height: 1.5;
+        color: #444;
+        margin-bottom: 16px;
+      }
+      .post-image {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .post-image img {
+        width: 100%;
+        max-width: 420px;
+        aspect-ratio: 3/4;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+      }
+      .fab {
+        position: fixed;
+        bottom: 60px;
+        right: 40px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        text-decoration: none;
+        background: #111;
+        color: #fff;
+        font-size: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        z-index: 200;
+      }
+      .fab:hover {
+        background: #333;
+        transform: scale(1.1);
+      }
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        justify-content: space-around;
+        align-items: center;
+        padding: 6px 0;
+        z-index: 300;
+      }
+      .bottom-nav button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .bottom-nav .plus-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        margin: 0 10px;
+      }
+      @media (max-width: 768px) {
+        nav#topNav {
+          grid-template-columns: auto 1fr auto;
+          column-gap: 12px;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .nav-center {
+          display: none;
+        }
+        .post {
+          flex-direction: column;
+          padding: 20px;
+          margin: 20px auto;
+        }
+        .post-info {
+          max-width: 100%;
+        }
+        .post-image {
+          justify-content: center;
+        }
+        .fab {
+          display: none;
+        }
+        .bottom-nav {
+          display: flex;
+        }
+        .search-pill {
+          width: calc(100vw - 32px);
+        }
+      }
 
       .logo {
         font-size: 24px;
@@ -234,9 +508,10 @@
         margin-top: 32px;
       }
 
-      .btn, .form-input[type="file"]::file-selector-button {
+      .btn,
+      .form-input[type="file"]::file-selector-button {
         padding: 12px 24px;
-        border-radius: .2em;
+        border-radius: 0.2em;
         text-decoration: none;
         font-size: 16px;
         font-weight: 500;
@@ -250,12 +525,13 @@
         gap: 8px;
       }
 
-      .btn-primary, .form-input[type="file"]::file-selector-button {
+      .btn-primary,
+      .form-input[type="file"]::file-selector-button {
         background: #111;
         color: white;
       }
 
-      .form-input[type="file"]::file-selector-button:hover{
+      .form-input[type="file"]::file-selector-button:hover {
         opacity: 0.8;
       }
 
@@ -272,7 +548,7 @@
       .btn-secondary:hover {
         background: #45ecff;
         color: #003b3e;
-        border:1px solid #63ddff; 
+        border: 1px solid #63ddff;
       }
 
       .btn-danger {
@@ -280,14 +556,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: .2em;
-        border:1px solid #c4c4c4; 
+        border-radius: 0.2em;
+        border: 1px solid #c4c4c4;
       }
 
       .btn-danger:hover {
         background-color: #ffd8d8;
         color: #b52515;
-        border:1px solid #ff6363; 
+        border: 1px solid #ff6363;
       }
 
       .ai-suggestions {
@@ -309,68 +585,71 @@
     </style>
   </head>
   <body>
-
-
-              <!-- ===== NAVBAR ===== -->
-  <nav id="topNav">
-    <div class="nav-left">
-      <div class="hamburger" onclick="toggleMenu(event)">
-        <span></span><span></span><span></span>
+    <!-- ===== NAVBAR ===== -->
+    <nav id="topNav">
+      <div class="nav-left">
+        <div class="hamburger" onclick="toggleMenu(event)">
+          <span></span><span></span><span></span>
+        </div>
+        <a
+          href="{{ url_for('home') }}"
+          style="text-decoration: none; color: inherit"
+          >Clyst</a
+        >
       </div>
-      <a href="{{ url_for('home') }}" style="text-decoration:none; color:inherit;">Clyst</a>
-    </div>
 
-    <div class="nav-center" id="navLinks">
+      <div class="nav-center" id="navLinks">
+        <a href="{{ url_for('home') }}">Community Feed</a>
+        <a href="{{ url_for('products_page') }}">Marketplace</a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+      </div>
+
+      <div class="nav-actions">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile') }}" class="profile-btn" title="Profile">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+              d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+            />
+          </svg>
+        </a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
       <a href="{{ url_for('home') }}">Community Feed</a>
       <a href="{{ url_for('products_page') }}">Marketplace</a>
-    {% if current_user.is_authenticated %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
-    {% endif %}
-    </div>
-
-    <div class="nav-actions">
       {% if current_user.is_authenticated %}
-      <a href="{{ url_for('profile') }}" class="profile-btn" title="Profile">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-        </svg>
-      </a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
       {% endif %}
     </div>
-  </nav>
-
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="{{ url_for('home') }}">Community Feed</a>
-    <a href="{{ url_for('products_page') }}">Marketplace</a>
-    {% if current_user.is_authenticated %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
-    {% endif %}
-  </div>
 
     <div class="container">
-
       <!-- Main Content -->
       <div class="main-content">
         <div class="form-container">
-
           <div class="form-card">
-          <div class="form-header">
-            <h1>Add New Product</h1>
-            <p>Sell your artwork in the marketplace</p>
-          </div>
+            <div class="form-header">
+              <h1>Add New Product</h1>
+              <p>Sell your artwork in the marketplace</p>
+            </div>
             <form
               action="{{ url_for('add_products') }}"
               method="POST"
               enctype="multipart/form-data"
             >
               <div class="form-group">
-                <label for="product_name" class="form-label"> Product Name
+                <label for="product_name" class="form-label">
+                  Product Name
                 </label>
                 <input
                   type="text"
@@ -386,8 +665,7 @@
               </div>
 
               <div class="form-group">
-                <label for="price" class="form-label"> Price (Rs.)
-                </label>
+                <label for="price" class="form-label"> Price (Rs.) </label>
                 <input
                   type="number"
                   id="price"
@@ -402,7 +680,8 @@
               </div>
 
               <div class="form-group">
-                <label for="description" class="form-label">Description (Optional)
+                <label for="description" class="form-label"
+                  >Description (Optional)
                 </label>
                 <textarea
                   id="description"
@@ -416,8 +695,7 @@
               </div>
 
               <div class="form-group">
-                <label for="product_image" class="form-label">Image URL
-                </label>
+                <label for="product_image" class="form-label">Image URL </label>
                 <input
                   type="url"
                   id="product_image"
@@ -431,7 +709,8 @@
               </div>
 
               <div class="form-group">
-                <label for="product_image_file" class="form-label">Upload Image
+                <label for="product_image_file" class="form-label"
+                  >Upload Image
                 </label>
                 <input
                   type="file"
@@ -446,9 +725,7 @@
               </div>
 
               <div class="form-group">
-                <label class="form-label"
-                  > Generate with AI</label
-                >
+                <label class="form-label"> Generate with AI</label>
                 <input
                   type="text"
                   id="ai_prompt"
@@ -469,10 +746,7 @@
               </div>
 
               <div class="form-actions">
-                <a
-                  href="{{ url_for('products_page') }}"
-                  class="btn btn-danger"
-                >
+                <a href="{{ url_for('products_page') }}" class="btn btn-danger">
                   <i class="fas fa-times"></i>
                   Cancel
                 </a>
@@ -620,6 +894,111 @@
                   } catch (err) {
                     console.error(err);
                     suggestionsDiv.innerHTML = `<div style=\"color:#c62828;\">Error generating suggestions.</div>`;
+                  }
+                });
+
+              // --- Translation UI (lightweight) ---
+              const trWrap = document.createElement("div");
+              trWrap.style.marginTop = "16px";
+              trWrap.innerHTML = `
+                  <div class="form-group">
+                    <label class="form-label">Translate title & description</label>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                      <select id="tr_lang" class="form-input" style="max-width:200px;">
+                        <option value="">Select language</option>
+                        <option value="en">English (en)</option>
+                        <option value="hi">Hindi (hi)</option>
+                        <option value="bn">Bengali (bn)</option>
+                        <option value="ta">Tamil (ta)</option>
+                        <option value="te">Telugu (te)</option>
+                        <option value="mr">Marathi (mr)</option>
+                        <option value="gu">Gujarati (gu)</option>
+                        <option value="kn">Kannada (kn)</option>
+                        <option value="ml">Malayalam (ml)</option>
+                        <option value="pa">Punjabi (pa)</option>
+                        <option value="ur">Urdu (ur)</option>
+                        <option value="es">Spanish (es)</option>
+                        <option value="fr">French (fr)</option>
+                        <option value="de">German (de)</option>
+                        <option value="zh">Chinese (zh)</option>
+                        <option value="ja">Japanese (ja)</option>
+                      </select>
+                      <button type="button" id="do_translate" class="btn btn-secondary">Translate</button>
+                    </div>
+                    <div id="tr_result" class="ai-suggestions"></div>
+                  </div>
+                `;
+              document.querySelector(".form-card").appendChild(trWrap);
+
+              document
+                .getElementById("do_translate")
+                .addEventListener("click", async function () {
+                  const lang = document.getElementById("tr_lang").value.trim();
+                  const title = document
+                    .getElementById("product_name")
+                    .value.trim();
+                  const descEl = document.getElementById("description");
+                  const desc = descEl ? descEl.value.trim() : "";
+                  if (!lang) {
+                    alert("Choose a language");
+                    return;
+                  }
+                  if (!(title || desc)) {
+                    alert("Fill name or description first");
+                    return;
+                  }
+                  const resBox = document.getElementById("tr_result");
+                  resBox.innerHTML = "Translating...";
+                  try {
+                    const res = await fetch("/api/translate_listing", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        type: "product",
+                        title,
+                        description: desc,
+                        target_lang: lang,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (!data.ok) {
+                      resBox.innerHTML = `<div style=\"color:#c62828;\">${
+                        data.error || "Failed to translate"
+                      }</div>`;
+                      return;
+                    }
+                    const phrases = (data.seo_phrases || [])
+                      .map(
+                        (p) =>
+                          `<span style=\"display:inline-block; margin:4px; padding:4px 8px; border:1px solid #e1e1e1; border-radius:12px; font-size:12px; color:#444;\">${p}</span>`
+                      )
+                      .join("");
+                    resBox.innerHTML = `
+                      <div style=\"border:1px solid #e9ecef; border-radius:8px; padding:12px; margin-top:8px;\">
+                        <div style=\"font-weight:600; margin-bottom:6px;\">Translated</div>
+                        <div style=\"margin-bottom:6px;\">Title: ${
+                          data.title || ""
+                        }</div>
+                        <div style=\"margin-bottom:10px;\">Description: ${
+                          data.description || ""
+                        }</div>
+                        <div style=\"margin-bottom:6px; font-weight:600;\">SEO phrases</div>
+                        <div>${
+                          phrases || '<i style=\\"color:#888;\\">None</i>'
+                        }</div>
+                        <div style=\"margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;\">
+                          <button type=\"button\" class=\"btn btn-primary\" id=\"tr_apply\">Apply</button>
+                        </div>
+                      </div>`;
+                    const applyBtn = document.getElementById("tr_apply");
+                    applyBtn?.addEventListener("click", () => {
+                      document.getElementById("product_name").value =
+                        data.title || title;
+                      if (descEl) descEl.value = data.description || desc;
+                    });
+                  } catch (err) {
+                    console.error(err);
+                    resBox.innerHTML = `<div style=\"color:#c62828;\">Error translating.</div>`;
                   }
                 });
             </script>
