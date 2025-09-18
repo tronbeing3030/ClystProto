@@ -376,7 +376,7 @@
       <!-- Main Content -->
        <div class="post">
     <div class="post-info">
-        {% if current_user.is_authenticated and current_user.id == 1 %}
+        {% if current_user.is_authenticated and current_user.id == product.artist_id %}
                 <button
                   class="btn btn-danger product-delete-btn"
                   onclick="if(confirm('Delete this product?')) window.location.href='{{ url_for('delete_posts', product_id=product.product_id) }}'"

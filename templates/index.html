@@ -712,7 +712,7 @@
               <div class="post-time">{{ post.created_at }}</div>
             </div>
             <div class="post-actions">
-              {% if current_user.is_authenticated and current_user.id == 1 %}
+              {% if current_user.is_authenticated and current_user.id == post.artist_id %}
               <button
                 class="action-btn delete-btn"
                 onclick="if(confirm('Delete this post?')) window.location.href='{{ url_for('delete_posts', post_id=post.post_id) }}'"
