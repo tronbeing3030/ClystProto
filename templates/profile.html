@@ -437,6 +437,81 @@
         line-height: 1.6;
       }
 
+      .portfolio-narrative {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 25px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .portfolio-narrative::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #111 0%, #45ecff 50%, #111 100%);
+      }
+
+      .portfolio-narrative h3 {
+        color: #111;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .portfolio-narrative h3 i {
+        color: #45ecff;
+        font-size: 18px;
+      }
+
+      .portfolio-narrative p {
+        color: #444;
+        line-height: 1.7;
+        font-size: 16px;
+        margin: 0;
+        text-align: justify;
+      }
+
+      .portfolio-narrative .narrative-meta {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+        font-size: 14px;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .narrative-stats {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .narrative-stat {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .narrative-stat i {
+        color: #45ecff;
+        font-size: 12px;
+      }
+
       /* Content Tabs */
       .content-tabs {
         background: white;
@@ -643,6 +718,24 @@
         .products-grid {
           grid-template-columns: 1fr;
         }
+        .portfolio-narrative {
+          margin: 20px auto;
+          padding: 20px;
+        }
+        .portfolio-narrative h3 {
+          font-size: 18px;
+        }
+        .portfolio-narrative p {
+          font-size: 15px;
+        }
+        .narrative-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+        .narrative-stats {
+          gap: 15px;
+        }
       }
 
       /* Empty states */
@@ -712,7 +805,7 @@
         color: #005c61;
         transform: translateY(-1px);
       }
-      
+
       .product-item .share-btn {
         position: absolute;
         right: 10px;
@@ -860,8 +953,41 @@
             {% endif %} {% endif %}
           </div>
 
+          <!-- Portfolio Narrative Section -->
+          {% if portfolio_narrative %}
+          <div class="portfolio-narrative">
+            <h3>
+              <i class="fa-solid fa-palette"></i>
+              About This Collection
+            </h3>
+            <p>{{ portfolio_narrative }}</p>
+            <div class="narrative-meta">
+              <div class="narrative-stats">
+                <div class="narrative-stat">
+                  <i class="fa-solid fa-images"></i>
+                  <span>{{ posts|length }} Posts</span>
+                </div>
+                <div class="narrative-stat">
+                  <i class="fa-solid fa-store"></i>
+                  <span>{{ products|length }} Products</span>
+                </div>
+                <div class="narrative-stat">
+                  <i class="fa-solid fa-paintbrush"></i>
+                  <span
+                    >{{ (posts|length + products|length) }} Total Works</span
+                  >
+                </div>
+              </div>
+              <div class="narrative-stat">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI-Generated Narrative</span>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
           <div class="form-actions">
-            {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated and not profile_user %}
             <a href="{{ url_for('add_posts') }}" class="btn btn-secondary">
               Add New Post
             </a>
@@ -890,14 +1016,13 @@
               <div class="posts-grid">
                 {% for post in posts %}
                 <div class="post-item">
-                  
-              <button
-                class="btn say-aloud-btn"
-                onclick="sayAloud({title: '{{ post.post_title }}', artist: '{{ post.artist.name }}', price: '{{ post.price }}', description: '{{ post.description | default('No description available') }}' })"
-                title="Say Aloud"
-              >
-                <i class="fa-solid fa-volume-high"></i>
-              </button>
+                  <button
+                    class="btn say-aloud-btn"
+                    onclick="sayAloud({title: '{{ post.post_title }}', artist: '{{ post.artist.name }}', price: '{{ post.price }}', description: '{{ post.description | default('No description available') }}' })"
+                    title="Say Aloud"
+                  >
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
                   {% if current_user.is_authenticated and current_user.id ==
                   post.artist_id %}
                   <button
@@ -927,12 +1052,13 @@
                     <div class="item-actions">
                       <span class="info-value">{{ post.created_at }}</span>
                     </div>
-                  </div><button
-              class="share-btn"
-              onclick="copyToClipboard(window.location.host + '{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
-            >
-              <i class="fa-solid fa-link"></i>
-            </button>
+                  </div>
+                  <button
+                    class="share-btn"
+                    onclick="copyToClipboard(window.location.host + '{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
+                  >
+                    <i class="fa-solid fa-link"></i>
+                  </button>
                 </div>
                 {% endfor %}
               </div>
@@ -952,18 +1078,18 @@
                 {% for product in products %}
                 <div class="product-item">
                   <button
-              class="btn say-aloud-btn"
-              onclick="sayAloud({title: '{{ product.title }}', artist: '{{ product.artist.name }}', price: '{{ product.price }}', description: '{{ product.description | default('No description available') }}' })"
-              title="Say Aloud"
-            >
-              <i class="fa-solid fa-volume-high"></i>
-            </button>
-            <button
-              class="share-btn"
-              onclick="copyToClipboard(window.location.host + '{{ url_for('product_buy', product_id=product.product_id) }}')"
-            >
-              <i class="fa-solid fa-link"></i>
-            </button>
+                    class="btn say-aloud-btn"
+                    onclick="sayAloud({title: '{{ product.title }}', artist: '{{ product.artist.name }}', price: '{{ product.price }}', description: '{{ product.description | default('No description available') }}' })"
+                    title="Say Aloud"
+                  >
+                    <i class="fa-solid fa-volume-high"></i>
+                  </button>
+                  <button
+                    class="share-btn"
+                    onclick="copyToClipboard(window.location.host + '{{ url_for('product_buy', product_id=product.product_id) }}')"
+                  >
+                    <i class="fa-solid fa-link"></i>
+                  </button>
                   {% if product.img_url %}
                   <img
                     src="{{ product.img_url }}"
@@ -1070,13 +1196,12 @@
         event.target.classList.add("active");
       }
 
-      
       function sayAloud(text) {
         const message = new SpeechSynthesisUtterance();
         message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
         window.speechSynthesis.speak(message); // Start speaking
       }
-      
+
       async function copyToClipboard(textToCopy) {
         try {
           await navigator.clipboard.writeText(textToCopy);

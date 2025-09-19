@@ -684,10 +684,43 @@ def profile():
     user_posts = db.session.execute(db.select(Posts).where(Posts.artist_id == current_user.id)).scalars().all()
     user_products = db.session.execute(db.select(Product).where(Product.artist_id == current_user.id)).scalars().all()
     
+    # Generate portfolio narrative
+    from ai import generate_enhanced_portfolio_narrative
+    
+    # Convert posts to dictionaries for AI analysis
+    posts_data = []
+    for post in user_posts:
+        posts_data.append({
+            'post_title': post.post_title,
+            'post_description': post.description,
+            'media_url': post.media_url,
+            'created_at': post.created_at
+        })
+    
+    # Convert products to dictionaries for AI analysis
+    products_data = []
+    for product in user_products:
+        products_data.append({
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'img_url': product.img_url,
+            'created_at': product.created_at
+        })
+    
+    # Generate the portfolio narrative
+    portfolio_narrative = generate_enhanced_portfolio_narrative(
+        artist_name=current_user.name,
+        posts=posts_data,
+        products=products_data,
+        user_location=current_user.location
+    )
+    
     return render_template("profile.html", 
                          current_user=current_user, 
                          posts=user_posts, 
-                         products=user_products)
+                         products=user_products,
+                         portfolio_narrative=portfolio_narrative)
 
 
 @app.route("/profile/<int:user_id>")
@@ -697,11 +730,44 @@ def view_profile(user_id):
     user_posts = db.session.execute(db.select(Posts).where(Posts.artist_id == user_id)).scalars().all()
     user_products = db.session.execute(db.select(Product).where(Product.artist_id == user_id)).scalars().all()
     
+    # Generate portfolio narrative
+    from ai import generate_enhanced_portfolio_narrative
+    
+    # Convert posts to dictionaries for AI analysis
+    posts_data = []
+    for post in user_posts:
+        posts_data.append({
+            'post_title': post.post_title,
+            'post_description': post.description,
+            'media_url': post.media_url,
+            'created_at': post.created_at
+        })
+    
+    # Convert products to dictionaries for AI analysis
+    products_data = []
+    for product in user_products:
+        products_data.append({
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'img_url': product.img_url,
+            'created_at': product.created_at
+        })
+    
+    # Generate the portfolio narrative
+    portfolio_narrative = generate_enhanced_portfolio_narrative(
+        artist_name=user.name,
+        posts=posts_data,
+        products=products_data,
+        user_location=user.location
+    )
+    
     return render_template("profile.html", 
                          current_user=current_user, 
                          profile_user=user,
                          posts=user_posts, 
-                         products=user_products)
+                         products=user_products,
+                         portfolio_narrative=portfolio_narrative)
 
 
 @app.route("/product/<int:product_id>")
