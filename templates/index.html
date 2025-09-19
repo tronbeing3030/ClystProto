@@ -281,6 +281,29 @@
         background: #333;
         transform: scale(1.1);
       }
+      .translate-btn {
+        position: fixed;
+        bottom: 150px;
+        right: 40px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        text-decoration: none;
+        background: #111;
+        color: #fff;
+        font-size: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        z-index: 200;
+      }
+      .translate-btn:hover {
+        background: #333;
+        transform: scale(1.1);
+      }
       .bottom-nav {
         display: none;
         position: fixed;
@@ -508,6 +531,27 @@
         color: #b52515;
       }
 
+      .share-btn {
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .share-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
+      }
+
       .post-image {
         width: 100%;
         max-height: 600px;
@@ -583,6 +627,13 @@
         background-color: #d8feff;
         color: #005c61;
         transform: translateY(-1px);
+      }
+
+      .translate-element {
+        position: fixed;
+        bottom: 220px;
+        right: 40px;
+        z-index: 1000;
       }
 
       /* Responsive */
@@ -759,9 +810,16 @@
               "
             >
               View Artisan
-            </a>
+            </a><button
+                class="share-btn"
+                onclick="copyToClipboard('{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
+              >
+                <i class="fa-solid fa-link"></i>
+              </button>
           </div>
+          
         </div>
+        
         {% endfor %} {% else %}
         <div class="empty-state">
           <h3>No posts yet</h3>
@@ -787,10 +845,19 @@
       </div>
     </div>
 
+    
+        <div id="google_translate_element" class="translate-element"></div>
+        
+
+    <button id="translateButton" onclick="googleTranslateElementInit()" class="translate-btn">A/a</button>
+
     {% if current_user.is_authenticated %}
     <a href="{{ url_for('add_posts') }}" class="fab">+</a>
     {% endif %}
 
+
+    
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script>
       function toggleMenu(e) {
         e?.stopPropagation?.();
@@ -857,6 +924,47 @@
         message.text = `${text.artist}'s suggestion/post titled ${text.title} says: ${text.description}.`;
         window.speechSynthesis.speak(message); // Start speaking
       }
+
+      function copy(){
+        const textElement = document.getElementById('myText');
+        if (textElement) {
+            const textContent = textElement.innerText;
+            copyToClipboard(textContent);
+        }
+      }
+      async function copyToClipboard(textToCopy) {
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            alert('Link copied to clipboard');
+        } catch (err) {
+            alert('Failed to copy link: ' + err);
+        }
+    }
+    </script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en', // Set your website's default language
+          includedLanguages: 'en,hi,bi,ta,te,mr,gu,kn,ml,pa,ur,es,fr,de,zh,ja,ko', // Optional: Specify languages to include in the dropdown
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE // Optional: Customize widget layout
+        }, 'google_translate_element');
+      }
+
+      function copy(){
+        const textElement = document.getElementById('myText');
+        if (textElement) {
+            const textContent = textElement.innerText;
+            copyToClipboard(textContent);
+        }
+      }
+      async function copyToClipboard(textToCopy) {
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            alert('Text copied to clipboard');
+        } catch (err) {
+            alert('Failed to copy text: ' + err);
+        }
+    }
     </script>
   </body>
 </html>
