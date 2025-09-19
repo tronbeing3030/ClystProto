@@ -688,6 +688,72 @@
         right: 40px;
         z-index: 1000;
       }
+
+      .say-aloud-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .say-aloud-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
+      }
+      
+      .product-item .share-btn {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .post-item .share-btn {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .share-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
+      }
     </style>
   </head>
   <body>
@@ -824,6 +890,14 @@
               <div class="posts-grid">
                 {% for post in posts %}
                 <div class="post-item">
+                  
+              <button
+                class="btn say-aloud-btn"
+                onclick="sayAloud({title: '{{ post.post_title }}', artist: '{{ post.artist.name }}', price: '{{ post.price }}', description: '{{ post.description | default('No description available') }}' })"
+                title="Say Aloud"
+              >
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
                   {% if current_user.is_authenticated and current_user.id ==
                   post.artist_id %}
                   <button
@@ -853,7 +927,12 @@
                     <div class="item-actions">
                       <span class="info-value">{{ post.created_at }}</span>
                     </div>
-                  </div>
+                  </div><button
+              class="share-btn"
+              onclick="copyToClipboard(window.location.host + '{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
+            >
+              <i class="fa-solid fa-link"></i>
+            </button>
                 </div>
                 {% endfor %}
               </div>
@@ -872,6 +951,19 @@
               <div class="products-grid">
                 {% for product in products %}
                 <div class="product-item">
+                  <button
+              class="btn say-aloud-btn"
+              onclick="sayAloud({title: '{{ product.title }}', artist: '{{ product.artist.name }}', price: '{{ product.price }}', description: '{{ product.description | default('No description available') }}' })"
+              title="Say Aloud"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button
+              class="share-btn"
+              onclick="copyToClipboard(window.location.host + '{{ url_for('product_buy', product_id=product.product_id) }}')"
+            >
+              <i class="fa-solid fa-link"></i>
+            </button>
                   {% if product.img_url %}
                   <img
                     src="{{ product.img_url }}"
@@ -976,6 +1068,22 @@
 
         // Add active class to clicked button
         event.target.classList.add("active");
+      }
+
+      
+      function sayAloud(text) {
+        const message = new SpeechSynthesisUtterance();
+        message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
+        window.speechSynthesis.speak(message); // Start speaking
+      }
+      
+      async function copyToClipboard(textToCopy) {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          alert("Text copied to clipboard");
+        } catch (err) {
+          alert("Failed to copy text: " + err);
+        }
       }
     </script>
 

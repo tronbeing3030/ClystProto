@@ -813,7 +813,7 @@
               View Artisan </a
             ><button
               class="share-btn"
-              onclick="copyToClipboard('{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
+              onclick="copyToClipboard(window.location.host + '{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
             >
               <i class="fa-solid fa-link"></i>
             </button>
@@ -957,14 +957,6 @@
           },
           "google_translate_element"
         );
-      }
-
-      function copy() {
-        const textElement = document.getElementById("myText");
-        if (textElement) {
-          const textContent = textElement.innerText;
-          copyToClipboard(textContent);
-        }
       }
       async function copyToClipboard(textToCopy) {
         try {

@@ -260,6 +260,7 @@
         flex: 1;
         display: flex;
         justify-content: flex-end;
+        position: relative;
       }
       .post-image img {
         width: 100%;
@@ -632,6 +633,56 @@
         right: 40px;
         z-index: 1000;
       }
+
+      .product-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .say-aloud-btn {
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .say-aloud-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
+      }
+
+      .share-btn {
+        margin-top: 10px;
+        background: #ffffffd3;
+        border: none;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        cursor: pointer;
+        font-size: 16px;
+        color: #111;
+        transition: opacity 0.2s;
+      }
+
+      .share-btn:hover {
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
+      }
     </style>
   </head>
   <body>
@@ -702,6 +753,7 @@
           </button>
           {% endif %}
 
+        
           <div class="product-header">
             <h1 class="product-title">{{ product.title }}</h1>
             <div class="product-price">Rs.{{ product.price }}</div>
@@ -746,6 +798,21 @@
             class="btn-primary"
             >Purchase</a
           >
+          <div class="product-options">
+          <button
+              class="share-btn"
+              onclick="copyToClipboard(window.location.host + '{{ url_for('product_buy', product_id=product.product_id) }}')"
+            >
+              <i class="fa-solid fa-link"></i>
+            </button>
+            <button
+              class="btn say-aloud-btn"
+              onclick="sayAloud({title: '{{ product.title }}', artist: '{{ product.artist.name }}', price: '{{ product.price }}', description: '{{ product.description | default('No description available') }}' })"
+              title="Say Aloud"
+            >
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
         </div>
         {% if product.img_url %}
         <div class="post-image">
@@ -756,6 +823,8 @@
           />
         </div>
         {% endif %}
+        
+            
       </div>
     </div>
 
@@ -787,6 +856,22 @@
         alert(
           "Payment gateway integration would go here!\n\nThis would typically redirect to:\n- Stripe\n- PayPal\n- Razorpay\n- Or other payment processors"
         );
+      }
+
+      
+      function sayAloud(text) {
+        const message = new SpeechSynthesisUtterance();
+        message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
+        window.speechSynthesis.speak(message); // Start speaking
+      }
+      
+      async function copyToClipboard(textToCopy) {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          alert("Text copied to clipboard");
+        } catch (err) {
+          alert("Failed to copy text: " + err);
+        }
       }
     </script>
 
