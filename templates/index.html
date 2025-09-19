@@ -763,7 +763,8 @@
               <div class="post-time">{{ post.created_at }}</div>
             </div>
             <div class="post-actions">
-              {% if current_user.is_authenticated and current_user.id == post.artist_id %}
+              {% if current_user.is_authenticated and current_user.id ==
+              post.artist_id %}
               <button
                 class="action-btn delete-btn"
                 onclick="if(confirm('Delete this post?')) window.location.href='{{ url_for('delete_posts', post_id=post.post_id) }}'"
@@ -809,17 +810,16 @@
                 cursor: pointer;
               "
             >
-              View Artisan
-            </a><button
-                class="share-btn"
-                onclick="copyToClipboard('{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
-              >
-                <i class="fa-solid fa-link"></i>
-              </button>
+              View Artisan </a
+            ><button
+              class="share-btn"
+              onclick="copyToClipboard('{{ url_for('home') }}?q={{ post.post_title }}+{{ post.artist.name }}')"
+            >
+              <i class="fa-solid fa-link"></i>
+            </button>
           </div>
-          
         </div>
-        
+
         {% endfor %} {% else %}
         <div class="empty-state">
           <h3>No posts yet</h3>
@@ -845,19 +845,24 @@
       </div>
     </div>
 
-    
-        <div id="google_translate_element" class="translate-element"></div>
-        
+    <div id="google_translate_element" class="translate-element"></div>
 
-    <button id="translateButton" onclick="googleTranslateElementInit()" class="translate-btn">A/a</button>
+    <button
+      id="translateButton"
+      onclick="googleTranslateElementInit()"
+      class="translate-btn"
+    >
+      A/a
+    </button>
 
     {% if current_user.is_authenticated %}
     <a href="{{ url_for('add_posts') }}" class="fab">+</a>
     {% endif %}
 
-
-    
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script
+      type="text/javascript"
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    ></script>
     <script>
       function toggleMenu(e) {
         e?.stopPropagation?.();
@@ -925,46 +930,50 @@
         window.speechSynthesis.speak(message); // Start speaking
       }
 
-      function copy(){
-        const textElement = document.getElementById('myText');
+      function copy() {
+        const textElement = document.getElementById("myText");
         if (textElement) {
-            const textContent = textElement.innerText;
-            copyToClipboard(textContent);
+          const textContent = textElement.innerText;
+          copyToClipboard(textContent);
         }
       }
       async function copyToClipboard(textToCopy) {
         try {
-            await navigator.clipboard.writeText(textToCopy);
-            alert('Link copied to clipboard');
+          await navigator.clipboard.writeText(textToCopy);
+          alert("Link copied to clipboard");
         } catch (err) {
-            alert('Failed to copy link: ' + err);
+          alert("Failed to copy link: " + err);
         }
-    }
+      }
     </script>
     <script type="text/javascript">
       function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en', // Set your website's default language
-          includedLanguages: 'en,hi,bi,ta,te,mr,gu,kn,ml,pa,ur,es,fr,de,zh,ja,ko', // Optional: Specify languages to include in the dropdown
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE // Optional: Customize widget layout
-        }, 'google_translate_element');
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en", // Set your website's default language
+            includedLanguages:
+              "en,hi,bi,ta,te,mr,gu,kn,ml,pa,ur,es,fr,de,zh,ja,ko", // Optional: Specify languages to include in the dropdown
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE, // Optional: Customize widget layout
+          },
+          "google_translate_element"
+        );
       }
 
-      function copy(){
-        const textElement = document.getElementById('myText');
+      function copy() {
+        const textElement = document.getElementById("myText");
         if (textElement) {
-            const textContent = textElement.innerText;
-            copyToClipboard(textContent);
+          const textContent = textElement.innerText;
+          copyToClipboard(textContent);
         }
       }
       async function copyToClipboard(textToCopy) {
         try {
-            await navigator.clipboard.writeText(textToCopy);
-            alert('Text copied to clipboard');
+          await navigator.clipboard.writeText(textToCopy);
+          alert("Text copied to clipboard");
         } catch (err) {
-            alert('Failed to copy text: ' + err);
+          alert("Failed to copy text: " + err);
         }
-    }
+      }
     </script>
   </body>
 </html>
