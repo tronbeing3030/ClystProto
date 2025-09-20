@@ -9,12 +9,13 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="../static/css/styles.css">
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/styles.css') }}"
+      href="../static/css/auth.css"
     />
   </head>
-  <style>
+  <!-- <style>
     * {
       margin: 0;
       padding: 0;
@@ -268,19 +269,12 @@
       right: 40px;
       z-index: 1000;
     }
-  </style>
+  </style> -->
   <body>
     <!-- ===== NAVBAR ===== -->
     <nav id="topNav">
       <div class="nav-left">
-        <div class="hamburger" onclick="toggleMenu(event)">
-          <span></span><span></span><span></span>
-        </div>
-        <a
-          href="{{ url_for('home') }}"
-          style="text-decoration: none; color: inherit"
-          >Clyst</a
-        >
+        <a href="{{ url_for('home') }}">Clyst</a>
       </div>
     </nav>
 
@@ -293,17 +287,7 @@
 
         {% with messages = get_flashed_messages() %} {% if messages %} {% for
         message in messages %}
-        <div
-          class="flash-message"
-          style="
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 16px;
-            padding: 8px;
-            background: #ffd2d2;
-            border-radius: 6px;
-          "
-        >
+        <div class="flash-message" style="display: block;">
           {{ message }}
         </div>
         {% endfor %} {% endif %} {% endwith %}
@@ -336,16 +320,15 @@
           </div>
         </form>
 
-        <div style="text-align: center; margin-top: 24px">
-          <p style="color: #8e8e8e">
+        <div class="not-registered">
+          <p>
             Don't have an account?
             <a
               href="{{ url_for('register') }}"
-              style="color: #111; text-decoration: none; font-weight: 500"
+              class="register-link"
               >Register here</a
             >
           </p>
-          <!-- <p><a href="{{ url_for('home') }}">Back to Home</a></p> -->
         </div>
       </div>
     </div>

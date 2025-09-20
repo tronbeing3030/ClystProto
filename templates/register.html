@@ -9,7 +9,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <style>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/auth.css">
+    <!-- <style>
       * {
         margin: 0;
         padding: 0;
@@ -269,7 +271,7 @@
         right: 40px;
         z-index: 1000;
       }
-    </style>
+    </style> -->
   </head>
   <body>
     <!-- ===== NAVBAR ===== -->
@@ -278,11 +280,7 @@
         <div class="hamburger" onclick="toggleMenu(event)">
           <span></span><span></span><span></span>
         </div>
-        <a
-          href="{{ url_for('home') }}"
-          style="text-decoration: none; color: inherit"
-          >Clyst</a
-        >
+        <a href="{{ url_for('home') }}">Clyst</a>
       </div>
     </nav>
 
@@ -295,7 +293,7 @@
 
         {% with messages = get_flashed_messages() %} {% if messages %} {% for
         message in messages %}
-        <div style="color: red">{{ message }}</div>
+        <div class="flash-message" style="display: block;">{{ message }}</div>
         {% endfor %} {% endif %} {% endwith %}
 
         <form method="POST" action="{{ url_for('register') }}">
@@ -360,37 +358,23 @@
           <div class="form-actions" style="margin-top: 24px">
             <button
               type="submit"
-              class="btn btn-primary"
-              style="
-                padding: 8px 18px;
-                text-decoration: none;
-                border: none;
-                border-radius: 6px;
-                background: #111;
-                color: #fff;
-                cursor: pointer;
-                font-size: 16px;
-                font-weight: 500;
-                transition: all 0.2s;
-              "
-            >
+              class="btn btn-primary">
               Create Account
             </button>
           </div>
         </form>
 
-        <div style="text-align: center; margin-top: 24px">
-          <p style="color: #8e8e8e">
+        <div class="not-registered">
+          <p>
             Already have an account?
             <a
               href="{{ url_for('login') }}"
-              style="color: #111; text-decoration: none; font-weight: 500"
+              class="register-link"
             >
               Login
             </a>
           </p>
         </div>
-        <!-- <p><a href="{{ url_for('home') }}">Back to Home</a></p> -->
       </div>
     </div>
 
