@@ -79,9 +79,7 @@
         text-decoration: none;
         color: #555;
         font-size: 16px;
-        padding-bottom: 3px;
-        transition: color 0.2s, border-bottom-color 0.2s;
-        border-bottom: 2px solid transparent;
+        transition: color 0.2s;
       }
       .nav-center a:hover {
         color: #000;
@@ -205,20 +203,35 @@
           opacity: 1;
         }
       }
-
-      .mobile-menu {
-        display: none;
-        flex-direction: column;
-        background: #fff;
-        padding: 10px var(--nav-pad-x);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+nav#topNav{
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
       }
+
+      .nav{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+      }
+
+      .mobile-menu{
+          display: none;
+          flex-direction: column;
+          position: sticky;
+          background: #fff;
+          padding: 0;
+          box-shadow: none;
+      }
+
       .mobile-menu a {
         text-decoration: none;
         color: #333;
         padding: 10px 0;
         font-size: 15px;
-        border-bottom: 1px dashed #eee;
+        border-bottom: 1px solid #eee;
       }
       .mobile-menu a:last-child {
         border-bottom: none;
@@ -227,10 +240,21 @@
         font-weight: 600;
         color: #000;
       }
+      .mobile-menu a:hover {
+        opacity: 0.8;
+      }
 
+      @media (min-width: 768px) {
+        .mobile-menu {
+          display: none !important;
+        }
+      }
       @media (max-width: 768px) {
         nav#topNav {
-          grid-template-columns: auto 1fr auto;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: flex-start;
           column-gap: 12px;
         }
         .hamburger {
@@ -245,7 +269,7 @@
       }
       .fab {
         position: fixed;
-        bottom: 60px;
+        bottom: 30px;
         right: 40px;
         width: 55px;
         height: 55px;
@@ -448,13 +472,14 @@
 
       .translate-btn {
         position: fixed;
-        bottom: 150px;
+        bottom: 100px;
         right: 40px;
         width: 55px;
         height: 55px;
+        border: none;
         border-radius: 50%;
         text-decoration: none;
-        background: #111;
+        background: #005c61;
         color: #fff;
         font-size: 28px;
         display: flex;
@@ -466,7 +491,7 @@
         z-index: 200;
       }
       .translate-btn:hover {
-        background: #333;
+        background: #00676c;
         transform: scale(1.1);
       }
 
@@ -531,6 +556,7 @@
   <body>
     <!-- ===== NAVBAR ===== -->
     <nav id="topNav">
+      <div class="nav">
       <div class="nav-left">
         <div class="hamburger" onclick="toggleMenu(event)">
           <span></span><span></span><span></span>
@@ -585,6 +611,18 @@
         </a>
         {% endif %}
       </div>
+      </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="{{ url_for('home') }}">Community Feed</a>
+      <a href="{{ url_for('products_page') }}">Marketplace</a>
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </div>
     </nav>
 
     <!-- ===== SEARCH BELOW NAV ===== -->
@@ -598,17 +636,6 @@
         />
         <div class="search-close" onclick="toggleSearch()">✕</div>
       </div>
-    </div>
-
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="{{ url_for('home') }}">Community Feed</a>
-      <a href="{{ url_for('products_page') }}">Marketplace</a>
-      {% if current_user.is_authenticated %}
-      <a href="{{ url_for('logout') }}">Logout</a>
-      {% else %}
-      <a href="{{ url_for('login') }}">Login</a>
-      <a href="{{ url_for('register') }}">Register</a>
-      {% endif %}
     </div>
 
     <div class="container">
@@ -732,7 +759,7 @@
       onclick="googleTranslateElementInit()"
       class="translate-btn"
     >
-      A/a
+      <i class="fa-solid fa-language"></i>
     </button>
 
     <script
