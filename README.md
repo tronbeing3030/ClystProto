@@ -262,9 +262,13 @@ The application features an advanced natural language search system that underst
 ![Marketplace](screenshots/marketplace.png)
 *The marketplace page displaying products with price filtering and natural language search capabilities.*
 
-### Artist Profile Page
-![Artist Profile](screenshots/artist_profile_page.png)
-*Artist profile featuring portfolio narrative, posts, and products with AI-generated content.*
+### Add Post Page with AI Suggestions
+![Add Post Page with AI Suggestions](screenshots/add_post_page_with_AI_suggestions.png)
+*Create post form featuring AI-powered title and description suggestions based on uploaded artwork and multilingual translation capabilities.*
+
+### Add Product Page with AI & Translation
+![Add Product Page with AI & Translation](screenshots/add_product_page_with_AI&translate.png)
+*Add product form showcasing AI content generation and multilingual translation capabilities.*
 
 ### Login Page
 ![Login Page](screenshots/login_page.png)
