@@ -6,15 +6,7 @@ import ai
 import uuid
 from werkzeug.utils import secure_filename
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, jsonify
-import base64
-import mimetypes
 import json
-import requests
-import re
-try:
-    import google.generativeai as genai
-except Exception:
-    genai = None
 # Type hints for better IDE support
 from typing import Optional, Dict, Any, List
 from flask_bootstrap5 import Bootstrap
@@ -333,174 +325,32 @@ def add_products():
 @login_required
 def generate_copy():
     """
-    Lightweight stub endpoint to generate title/description suggestions
-    based on provided prompt/description and optional image url/base64.
-    This can be replaced with a real AI provider.
+    Endpoint to generate title/description suggestions using AI.
     """
     try:
         data = request.get_json(silent=True) or {}
-        content_type = (data.get('type') or 'post').lower()
-        prompt = (data.get('prompt') or '').strip()
-        description = (data.get('description') or '').strip()
-        image_url = (data.get('image_url') or '').strip()
+        content_type = data.get('type', 'post')
+        prompt = data.get('prompt', '')
+        description = data.get('description', '')
+        image_url = data.get('image_url', '')
         image_base64 = data.get('image_base64')
         image_mime = data.get('image_mime')
-        image_present = bool(image_url or image_base64)
 
-        # Require image presence for generation to align with UX
-        if not image_present:
-            return jsonify({
-                'ok': False,
-                'error': 'Image is required (URL or file) to generate suggestions.'
-            }), 400
+        # Call AI function
+        result = ai.generate_copy_suggestions(
+            content_type=content_type,
+            prompt=prompt,
+            description=description,
+            image_url=image_url,
+            image_base64=image_base64,
+            image_mime=image_mime,
+            api_key=GEMINI_API_KEY
+        )
 
-        # If Gemini is configured, use it; otherwise fallback to simple stub
-        api_key = GEMINI_API_KEY
-        if genai and api_key and api_key != "your_gemini_api_key_here":
-            try:
-                genai.configure(api_key=api_key)  # type: ignore
-                # Encourage variation and ask for JSON output directly
-                model = genai.GenerativeModel(  # type: ignore
-                    model_name='gemini-1.5-flash',
-                    generation_config={
-                        'temperature': 0.9,
-                        'top_p': 0.95,
-                        'response_mime_type': 'application/json'
-                    }
-                )
-
-                # Prepare image bytes
-                image_part = None
-                if image_base64:
-                    try:
-                        image_bytes = base64.b64decode(image_base64)
-                        mime_type = image_mime or 'image/jpeg'
-                        image_part = {
-                            'mime_type': mime_type,
-                            'data': image_bytes
-                        }
-                    except Exception:
-                        image_part = None
-                elif image_url:
-                    try:
-                        # Best-effort fetch; limit size
-                        resp = requests.get(image_url, timeout=10)
-                        resp.raise_for_status()
-                        content = resp.content
-                        # Basic size guard (16MB already enforced server-wide)
-                        mime_type = resp.headers.get('Content-Type') or mimetypes.guess_type(image_url)[0] or 'image/jpeg'
-                        image_part = {
-                            'mime_type': mime_type,
-                            'data': content
-                        }
-                    except Exception:
-                        image_part = None
-
-                user_goal = 'product listing' if content_type == 'product' else 'social post'
-                guidance = prompt or ''
-                base_text = description or ''
-                instruction = (
-                    "You are a creative copy assistant for artists. "
-                    f"Given an artwork image and optional context for a {user_goal}, "
-                    "generate exactly 3 varied suggestions as strict JSON array under key suggestions, "
-                    "each item with keys 'title' and 'description'. Keep titles under 60 chars; descriptions under 280 chars. "
-                    "Return ONLY JSON with shape: {\"suggestions\":[{\"title\":\"...\",\"description\":\"...\"}, ...]}"
-                )
-
-                # Put image first to ground the response in the artwork
-                parts: List[Any] = []
-                if image_part:
-                    parts.append(image_part)
-                parts.append(instruction)
-                if guidance:
-                    parts.append(f"Prompt: {guidance}")
-                if base_text:
-                    parts.append(f"Context: {base_text}")
-
-                result = model.generate_content(parts)
-
-                # Robustly extract text
-                text = ''
-                try:
-                    text = (getattr(result, 'text', '') or '').strip()
-                except Exception:
-                    text = ''
-                if not text:
-                    try:
-                        for cand in getattr(result, 'candidates', []) or []:  # type: ignore[attr-defined]
-                            content = getattr(cand, 'content', None)
-                            for p in getattr(content, 'parts', []) or []:
-                                pt = getattr(p, 'text', None)
-                                if pt:
-                                    text += str(pt)
-                        text = text.strip()
-                    except Exception:
-                        text = ''
-                suggestions = []
-                try:
-                    # If extra text surrounds JSON, isolate the outermost JSON object
-                    candidate = text
-                    if '{' in text and '}' in text:
-                        candidate = text[text.find('{'): text.rfind('}') + 1]
-                    parsed = json.loads(candidate)
-                    for item in (parsed.get('suggestions') or [])[:3]:
-                        title = str(item.get('title', '')).strip()
-                        desc = str(item.get('description', '')).strip()
-                        if title and desc:
-                            suggestions.append({'title': title, 'description': desc})
-                except Exception:
-                    # Fallback: derive multiple variants from lines
-                    lines = [ln.strip('- •\t ') for ln in (text or '').split('\n') if ln.strip()]
-                    if lines:
-                        for i, ln in enumerate(lines[:3]):
-                            suggestions.append({
-                                'title': (ln[:60] or 'Artwork Suggestion'),
-                                'description': (ln[:280] or 'A unique piece blending technique and emotion.')
-                            })
-
-                if not suggestions:
-                    # Final fallback simple templates
-                    base_context = (prompt or description or 'artwork').strip() or 'artwork'
-                    is_product = content_type == 'product'
-                    titles = [
-                        f"{base_context.capitalize()}: A Visual Story",
-                        f"{base_context.capitalize()} — Limited Edition",
-                        f"The Essence of {base_context.capitalize()}"
-                    ]
-                    descs = [
-                        "Handcrafted piece with meticulous detail.",
-                        "Original work. Premium materials, gallery-ready finish.",
-                        "Expressive composition. Ships safely, ready to display."
-                    ] if is_product else [
-                        "An exploration through texture, light, and color.",
-                        "Captures movement and mood with layered technique.",
-                        "A contemplative blend of technique and emotion."
-                    ]
-                    suggestions = [{ 'title': titles[i], 'description': descs[i]} for i in range(3)]
-
-                return jsonify({'ok': True, 'suggestions': suggestions})
-            except Exception as e:
-                return jsonify({'ok': False, 'error': f'Gemini error: {str(e)}'}), 500
-
-        # Fallback stub generation when Gemini not configured
-        base_context = (prompt or description or 'artwork').strip() or 'artwork'
-        titles = [
-            f"{base_context.capitalize()}: A Visual Story",
-            f"{base_context.capitalize()} — Limited Edition",
-            f"The Essence of {base_context.capitalize()}"
-        ]
-        is_product = content_type == 'product'
-        descriptions = [
-            "Handcrafted piece with meticulous detail.",
-            "Original work. Premium materials, gallery-ready finish.",
-            "Expressive composition. Ships safely, ready to display."
-        ] if is_product else [
-            "An exploration through texture, light, and color.",
-            "Captures movement and mood with layered technique.",
-            "A contemplative blend of technique and emotion."
-        ]
-        suggestions = [{'title': titles[i], 'description': descriptions[i]} for i in range(3)]
-        return jsonify({'ok': True, 'suggestions': suggestions})
+        if result['ok']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 
@@ -510,149 +360,31 @@ def generate_copy():
 def translate_listing():
     """
     Translate a listing's title/description into a target language and suggest SEO phrases.
-    Uses Gemini if configured, otherwise returns a simple stubbed response.
-    Input JSON: { type: 'post'|'product', title: str, description: str, target_lang: 'hi'|'es'|'fr'|..., locale: str? }
-    Output JSON: { ok: True, title: str, description: str, seo_phrases: [str, ...] }
     """
     try:
         data = request.get_json(silent=True) or {}
-        content_type = (data.get('type') or 'post').lower()
-        title = (data.get('title') or '').strip()
-        description = (data.get('description') or '').strip()
-        target_lang = (data.get('target_lang') or '').strip().lower()
-        locale = (data.get('locale') or '').strip().lower()
-        source_lang = (data.get('source_lang') or '').strip().lower()
+        content_type = data.get('type', 'post')
+        title = data.get('title', '')
+        description = data.get('description', '')
+        target_lang = data.get('target_lang', '')
+        locale = data.get('locale', '')
+        source_lang = data.get('source_lang', '')
 
-        if not target_lang:
-            return jsonify({'ok': False, 'error': 'target_lang is required'}), 400
-        if not (title or description):
-            return jsonify({'ok': False, 'error': 'Provide title or description to translate'}), 400
+        # Call AI function
+        result = ai.translate_listing(
+            content_type=content_type,
+            title=title,
+            description=description,
+            target_lang=target_lang,
+            locale=locale,
+            source_lang=source_lang,
+            api_key=GEMINI_API_KEY
+        )
 
-        # Lightweight source language heuristic if not provided (supports many scripts)
-        def guess_lang(sample_text: str) -> str:
-            try:
-                s = sample_text or ''
-                if re.search(r"[\u0900-\u097F]", s):  # Devanagari (hi, mr, ne)
-                    return 'hi'
-                if re.search(r"[\u0980-\u09FF]", s):  # Bengali
-                    return 'bn'
-                if re.search(r"[\u0A00-\u0A7F]", s):  # Gurmukhi
-                    return 'pa'
-                if re.search(r"[\u0A80-\u0AFF]", s):  # Gujarati
-                    return 'gu'
-                if re.search(r"[\u0B00-\u0B7F]", s):  # Oriya/Odia
-                    return 'or'
-                if re.search(r"[\u0B80-\u0BFF]", s):  # Tamil
-                    return 'ta'
-                if re.search(r"[\u0C00-\u0C7F]", s):  # Telugu
-                    return 'te'
-                if re.search(r"[\u0C80-\u0CFF]", s):  # Kannada
-                    return 'kn'
-                if re.search(r"[\u0D00-\u0D7F]", s):  # Malayalam
-                    return 'ml'
-                if re.search(r"[\u0600-\u06FF]", s):  # Arabic script
-                    return 'ar'
-                if re.search(r"[\u3040-\u309F\u30A0-\u30FF]", s):  # Hiragana/Katakana
-                    return 'ja'
-                if re.search(r"[\u4E00-\u9FFF\u3400-\u4DBF]", s):  # CJK Han
-                    return 'zh'
-                if re.search(r"[\uAC00-\uD7AF]", s):  # Hangul
-                    return 'ko'
-                if re.search(r"[\u0400-\u04FF]", s):  # Cyrillic
-                    return 'ru'
-                if re.search(r"[\u0370-\u03FF]", s):  # Greek
-                    return 'el'
-                if re.search(r"[\u0590-\u05FF]", s):  # Hebrew
-                    return 'he'
-            except Exception:
-                pass
-            return ''
-
-        if not source_lang:
-            source_lang = guess_lang((title + "\n" + description).strip())
-
-        api_key = GEMINI_API_KEY
-        if genai and api_key and api_key != "your_gemini_api_key_here":
-            try:
-                genai.configure(api_key=api_key)  # type: ignore
-                model = genai.GenerativeModel(  # type: ignore
-                    model_name='gemini-1.5-flash',
-                    generation_config={
-                        'temperature': 0.3,
-                        'top_p': 0.8,
-                        'response_mime_type': 'application/json'
-                    }
-                )
-                instruction = (
-                    "You are a localization assistant for an art marketplace. "
-                    f"Translate from {source_lang or 'auto-detected'} to {target_lang}. "
-                    "Translate naturally and fluently while staying faithful to the original meaning. "
-                    "Do not add new information or marketing fluff. Preserve names and intent. "
-                    "If the source already matches the target language, return it as-is. "
-                    f"Translate the following {content_type} listing into the target language. "
-                    "Return ONLY JSON with keys: title, description, seo_phrases (array of 6 short phrases suitable for search/hashtags in the target locale). "
-                    "No emojis."
-                )
-                user_json = json.dumps({
-                    'title': title,
-                    'description': description,
-                    'target_lang': target_lang,
-                    'source_lang': source_lang,
-                    'locale': locale,
-                })
-                result = model.generate_content([instruction, f"INPUT:\n{user_json}"])
-                out_text = ''
-                try:
-                    out_text = (getattr(result, 'text', '') or '').strip()
-                except Exception:
-                    out_text = ''
-                if not out_text:
-                    try:
-                        for cand in getattr(result, 'candidates', []) or []:  # type: ignore[attr-defined]
-                            content = getattr(cand, 'content', None)
-                            for p in getattr(content, 'parts', []) or []:
-                                pt = getattr(p, 'text', None)
-                                if pt:
-                                    out_text += str(pt)
-                        out_text = out_text.strip()
-                    except Exception:
-                        out_text = ''
-                parsed = {}
-                try:
-                    candidate = out_text
-                    if '{' in out_text and '}' in out_text:
-                        candidate = out_text[out_text.find('{'): out_text.rfind('}') + 1]
-                    parsed = json.loads(candidate)
-                except Exception:
-                    parsed = {}
-                tr_title = str(parsed.get('title') or title).strip()
-                tr_desc = str(parsed.get('description') or description).strip()
-                seo_phrases = parsed.get('seo_phrases') or []
-                # Ensure list of strings
-                if not isinstance(seo_phrases, list):
-                    seo_phrases = []
-                seo_phrases = [str(s).strip() for s in seo_phrases if str(s).strip()]
-                return jsonify({'ok': True, 'title': tr_title, 'description': tr_desc, 'seo_phrases': seo_phrases[:8]})
-            except Exception as e:
-                return jsonify({'ok': False, 'error': f'Gemini error: {str(e)}'}), 500
-
-        # Fallback stub translation when Gemini not configured
-        # Simple placeholder to show multi-language UI works without external API.
-        lang_prefix = target_lang if target_lang else 'xx'
-        def stub_translate(text_in: str) -> str:
-            if not text_in:
-                return ''
-            return f"[{lang_prefix}] {text_in}"
-        tr_title = stub_translate(title)
-        tr_desc = stub_translate(description)
-        # Very basic seo generation from source words
-        base_words = []
-        base_words.extend((title or '').split())
-        base_words.extend((description or '').split())
-        base_words = [w.strip('#,.;:!()[]{}"'"'" ).lower() for w in base_words if len(w) > 3][:12]
-        seo_phrases = list({f"{lang_prefix}-{w}" for w in base_words})
-        seo_phrases = seo_phrases[:8]
-        return jsonify({'ok': True, 'title': tr_title, 'description': tr_desc, 'seo_phrases': seo_phrases})
+        if result['ok']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 
