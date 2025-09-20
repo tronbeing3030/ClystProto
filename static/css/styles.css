@@ -247,7 +247,7 @@ nav#topNav {
 	width: 55px;
 	height: 55px;
 	border: none;
-	border-radius: 50%;
+	border-radius: 0.2em;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -436,7 +436,7 @@ nav#topNav {
 		right: 40px;
 		width: 55px;
 		height: 55px;
-		border-radius: 50%;
+		border-radius: 0.2em;
 		text-decoration: none;
 		background: #111;
 		color: #fff;

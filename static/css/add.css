@@ -288,16 +288,28 @@
 }
 
 .btn-secondary:hover {
+	opacity: 1;
 	background: #45ecff;
 	color: #003b3e;
 	border: 1px solid #63ddff;
 }
 
 .btn-danger {
+<<<<<<< HEAD
 	background: #f8f9fa;
 	color: #dc3545;
 	border: 1px solid #dc3545;
 	min-width: 120px;
+=======
+	color: #111;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 0.2em;
+	border: 1px solid #c4c4c4;
+	width: 100%;
+	padding: 20px;
+>>>>>>> 9ed0a038664633175bab7058424521b725eecb81
 }
 
 .btn-danger:hover {
