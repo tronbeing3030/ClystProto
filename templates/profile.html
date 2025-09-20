@@ -459,14 +459,63 @@
         background: linear-gradient(90deg, #111 0%, #45ecff 50%, #111 100%);
       }
 
+      .narrative-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
       .portfolio-narrative h3 {
         color: #111;
         font-size: 20px;
         font-weight: 600;
-        margin-bottom: 15px;
+        margin: 0;
         display: flex;
         align-items: center;
         gap: 10px;
+      }
+
+      .speak-btn {
+        background: linear-gradient(135deg, #45ecff 0%, #111 100%);
+        border: none;
+        color: white;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(69, 236, 255, 0.3);
+      }
+
+      .speak-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(69, 236, 255, 0.4);
+      }
+
+      .speak-btn:active {
+        transform: scale(0.95);
+      }
+
+      .speak-btn.playing {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       .portfolio-narrative h3 i {
@@ -478,7 +527,7 @@
         color: #444;
         line-height: 1.7;
         font-size: 16px;
-        margin: 0;
+        margin: 0 0 15px 0;
         text-align: justify;
       }
 
@@ -736,6 +785,16 @@
         .narrative-stats {
           gap: 15px;
         }
+        .narrative-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+        .speak-btn {
+          width: 45px;
+          height: 45px;
+          font-size: 14px;
+        }
       }
 
       /* Empty states */
@@ -956,11 +1015,21 @@
           <!-- Portfolio Narrative Section -->
           {% if portfolio_narrative %}
           <div class="portfolio-narrative">
-            <h3>
-              <i class="fa-solid fa-palette"></i>
-              About This Collection
-            </h3>
-            <p>{{ portfolio_narrative }}</p>
+            <div class="narrative-header">
+              <h3>
+                <i class="fa-solid fa-palette"></i>
+                About This Collection
+              </h3>
+              <button
+                id="speakNarrative"
+                class="speak-btn"
+                title="Listen to Artist Story"
+              >
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
+            </div>
+            <p id="narrativeText">{{ portfolio_narrative }}</p>
+
             <div class="narrative-meta">
               <div class="narrative-stats">
                 <div class="narrative-stat">
@@ -1145,71 +1214,364 @@
     </div>
 
     <script>
-      function toggleMenu(e) {
+          function toggleMenu(e) {
         e?.stopPropagation?.();
         const menu = document.getElementById("mobileMenu");
         const now = menu.style.display === "flex" ? "none" : "flex";
         menu.style.display = now;
-        if (now === "flex")
-          document.getElementById("searchBelow").classList.remove("open");
+            if (now === "flex")
+              document.getElementById("searchBelow").classList.remove("open");
       }
 
-      function toggleSearch() {
+          function toggleSearch() {
         const bar = document.getElementById("searchBelow");
         bar.classList.toggle("open");
         const menu = document.getElementById("mobileMenu");
-        if (menu.style.display === "flex") menu.style.display = "none";
-        if (bar.classList.contains("open")) {
-          requestAnimationFrame(() =>
-            document.getElementById("globalSearchInput").focus()
-          );
+            if (menu.style.display === "flex") menu.style.display = "none";
+            if (bar.classList.contains("open")) {
+              requestAnimationFrame(() =>
+                document.getElementById("globalSearchInput").focus()
+              );
         }
       }
 
       // Highlight active nav link
-      document.addEventListener("DOMContentLoaded", function () {
-        const path = window.location.pathname.split("/").pop();
-        document
-          .querySelectorAll(".nav-center a, .mobile-menu a")
-          .forEach((link) => {
-            if (link.getAttribute("href") === path) {
-              link.classList.add("active");
-            } else {
-              link.classList.remove("active");
-            }
-          });
+          document.addEventListener("DOMContentLoaded", function () {
+            const path = window.location.pathname.split("/").pop();
+            document
+              .querySelectorAll(".nav-center a, .mobile-menu a")
+              .forEach((link) => {
+                if (link.getAttribute("href") === path) {
+                  link.classList.add("active");
+          } else {
+                  link.classList.remove("active");
+          }
+        });
       });
 
-      function showTab(tabName) {
-        // Hide all tab panels
-        const tabPanels = document.querySelectorAll(".tab-panel");
-        tabPanels.forEach((panel) => (panel.style.display = "none"));
+          function showTab(tabName) {
+            // Hide all tab panels
+            const tabPanels = document.querySelectorAll(".tab-panel");
+            tabPanels.forEach((panel) => (panel.style.display = "none"));
 
-        // Remove active class from all tab buttons
-        const tabButtons = document.querySelectorAll(".tab-button");
-        tabButtons.forEach((button) => button.classList.remove("active"));
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll(".tab-button");
+            tabButtons.forEach((button) => button.classList.remove("active"));
 
-        // Show selected tab panel
-        document.getElementById(tabName + "-tab").style.display = "block";
+            // Show selected tab panel
+            document.getElementById(tabName + "-tab").style.display = "block";
 
-        // Add active class to clicked button
-        event.target.classList.add("active");
-      }
+            // Add active class to clicked button
+            event.target.classList.add("active");
+          }
 
-      function sayAloud(text) {
-        const message = new SpeechSynthesisUtterance();
-        message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
-        window.speechSynthesis.speak(message); // Start speaking
-      }
+          function sayAloud(text) {
+            const message = new SpeechSynthesisUtterance();
+            message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
+            window.speechSynthesis.speak(message); // Start speaking
+          }
 
-      async function copyToClipboard(textToCopy) {
-        try {
-          await navigator.clipboard.writeText(textToCopy);
-          alert("Text copied to clipboard");
-        } catch (err) {
-          alert("Failed to copy text: " + err);
-        }
-      }
+          async function copyToClipboard(textToCopy) {
+            try {
+              await navigator.clipboard.writeText(textToCopy);
+              alert("Text copied to clipboard");
+            } catch (err) {
+              alert("Failed to copy text: " + err);
+            }
+          }
+
+       // Text-to-Speech functionality
+       let speechSynthesis = window.speechSynthesis;
+       let currentUtterance = null;
+       let isPlaying = false;
+
+       // Function to detect current language from Google Translate
+       function getCurrentLanguage() {
+         // Method 1: Check if page has been translated by Google Translate
+         const body = document.body;
+         if (body.classList.contains('translated-ltr') || body.classList.contains('translated-rtl')) {
+           // Try to get language from Google Translate's iframe
+           const translateFrame = document.querySelector('iframe[src*="translate.google"]');
+           if (translateFrame) {
+             try {
+               const frameDoc = translateFrame.contentDocument || translateFrame.contentWindow.document;
+               const langSelect = frameDoc.querySelector('select');
+               if (langSelect && langSelect.value) {
+                 return langSelect.value;
+               }
+             } catch (e) {
+               // Cross-origin access blocked
+             }
+           }
+
+           // Try to detect from URL parameters
+           const urlParams = new URLSearchParams(window.location.search);
+           const lang = urlParams.get('hl');
+           if (lang) return lang;
+
+           // Check for Google Translate's language indicator
+           const langIndicator = document.querySelector('[data-google-lang]');
+           if (langIndicator) {
+             return langIndicator.getAttribute('data-google-lang');
+           }
+
+           // Try to detect from Google Translate's global state
+           if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+             const translateElement = document.querySelector('.goog-te-combo');
+             if (translateElement && translateElement.value) {
+               return translateElement.value;
+             }
+           }
+         }
+
+         // Method 2: Check for Google Translate's language selector
+         const langSelect = document.querySelector('.goog-te-combo');
+         if (langSelect && langSelect.value && langSelect.value !== 'en') {
+           return langSelect.value;
+         }
+
+         // Method 3: Check for Google Translate's banner frame
+         const googleBanner = document.querySelector('.goog-te-banner-frame');
+         if (googleBanner) {
+           const bannerSelect = googleBanner.querySelector('select');
+           if (bannerSelect && bannerSelect.value) {
+             return bannerSelect.value;
+           }
+         }
+
+         // Default to English if no translation detected
+         return 'en';
+       }
+
+       // Function to detect language from Google Translate's actual implementation
+       function detectGoogleTranslateLanguage() {
+         // Check if Google Translate is active
+         const body = document.body;
+         if (body.classList.contains('translated-ltr') || body.classList.contains('translated-rtl')) {
+           // Try to get language from Google Translate's iframe
+           const translateFrame = document.querySelector('iframe[src*="translate.google"]');
+           if (translateFrame) {
+             try {
+               const frameDoc = translateFrame.contentDocument || translateFrame.contentWindow.document;
+               const langSelect = frameDoc.querySelector('select');
+               if (langSelect && langSelect.value) {
+                 return langSelect.value;
+               }
+             } catch (e) {
+               // Cross-origin access blocked
+             }
+           }
+
+           // Try to detect from URL parameters
+           const urlParams = new URLSearchParams(window.location.search);
+           const lang = urlParams.get('hl');
+           if (lang) return lang;
+
+           // Check for Google Translate's language indicator
+           const langIndicator = document.querySelector('[data-google-lang]');
+           if (langIndicator) {
+             return langIndicator.getAttribute('data-google-lang');
+           }
+
+           // Try to detect from Google Translate's global state
+           if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+             const translateElement = document.querySelector('.goog-te-combo');
+             if (translateElement && translateElement.value) {
+               return translateElement.value;
+             }
+           }
+         }
+
+         // Check for Google Translate's language selector
+         const langSelect = document.querySelector('.goog-te-combo');
+         if (langSelect && langSelect.value && langSelect.value !== 'en') {
+           return langSelect.value;
+         }
+
+         // Check for Google Translate's banner frame
+         const googleBanner = document.querySelector('.goog-te-banner-frame');
+         if (googleBanner) {
+           const bannerSelect = googleBanner.querySelector('select');
+           if (bannerSelect && bannerSelect.value) {
+             return bannerSelect.value;
+           }
+         }
+
+         // Default to English if no translation detected
+         return 'en';
+       }
+
+       // Function to get the actual translated text
+       function getTranslatedText() {
+         const narrativeElement = document.getElementById('narrativeText');
+         if (!narrativeElement) return '';
+
+         // Check if the page has been translated
+         const body = document.body;
+         if (body.classList.contains('translated-ltr') || body.classList.contains('translated-rtl')) {
+           // Return the translated text that's currently displayed
+           return narrativeElement.textContent || narrativeElement.innerText;
+         }
+
+         // Return original text if not translated
+         return narrativeElement.textContent || narrativeElement.innerText;
+       }
+
+           function speakNarrative() {
+             const narrativeText = document.getElementById('narrativeText');
+             const speakBtn = document.getElementById('speakNarrative');
+
+             if (!narrativeText) return;
+
+             // Stop any current speech
+             if (isPlaying) {
+               stopSpeech();
+               return;
+             }
+
+         // Get the actual translated text
+         const translatedText = getTranslatedText();
+
+         // Create enhanced narrative for speech
+         const artistName = "{{ profile_user.name if profile_user else current_user.name }}";
+         const postsCount = {{ posts|length }};
+         const productsCount = {{ products|length }};
+         const totalWorks = postsCount + productsCount;
+         const location = "{{ profile_user.location if profile_user else current_user.location }}";
+
+         const enhancedNarrative = `${translatedText} This collection features ${totalWorks} unique works, including ${postsCount} community posts and ${productsCount} marketplace products, each telling a part of ${artistName}'s creative story.`;
+
+             // Create utterance
+             currentUtterance = new SpeechSynthesisUtterance(enhancedNarrative);
+
+             // Configure voice settings
+             currentUtterance.rate = 0.9;
+             currentUtterance.pitch = 1.0;
+             currentUtterance.volume = 0.8;
+
+         // Detect current language from Google Translate
+         const currentLang = detectGoogleTranslateLanguage();
+         console.log('Detected language:', currentLang);
+
+         // Try to use a pleasant voice in the current language
+         const voices = speechSynthesis.getVoices();
+         console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+
+         const preferredVoice = voices.find(function(voice) {
+           return voice.lang.startsWith(currentLang) &&
+             (voice.name.includes('Google') || voice.name.includes('Microsoft') || voice.name.includes('Samantha') || voice.name.includes('Natural'));
+         });
+
+         // Fallback to any voice in the current language
+         const fallbackVoice = voices.find(function(voice) {
+           return voice.lang.startsWith(currentLang);
+         });
+
+         if (preferredVoice) {
+           currentUtterance.voice = preferredVoice;
+           console.log('Using preferred voice:', preferredVoice.name);
+         } else if (fallbackVoice) {
+           currentUtterance.voice = fallbackVoice;
+           console.log('Using fallback voice:', fallbackVoice.name);
+         } else {
+           console.log('No voice found for language:', currentLang);
+         }
+
+         // Set language for the utterance
+         currentUtterance.lang = currentLang;
+
+             // Event handlers
+             currentUtterance.onstart = function() {
+               isPlaying = true;
+               speakBtn.classList.add('playing');
+               speakBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+             };
+
+             currentUtterance.onend = function() {
+               stopSpeech();
+             };
+
+         currentUtterance.onerror = function(event) {
+           console.error('Speech synthesis error:', event.error);
+           stopSpeech();
+         };
+
+             // Start speaking
+             speechSynthesis.speak(currentUtterance);
+           }
+
+           function stopSpeech() {
+             if (currentUtterance) {
+               speechSynthesis.cancel();
+             }
+
+             isPlaying = false;
+             const speakBtn = document.getElementById('speakNarrative');
+
+             if (speakBtn) {
+               speakBtn.classList.remove('playing');
+               speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+             }
+           }
+
+       // Event listeners
+       document.addEventListener('DOMContentLoaded', function() {
+         const speakBtn = document.getElementById('speakNarrative');
+
+         if (speakBtn) {
+           speakBtn.addEventListener('click', speakNarrative);
+         }
+
+         // Listen for Google Translate events
+         const observer = new MutationObserver(function(mutations) {
+           mutations.forEach(function(mutation) {
+             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+               const target = mutation.target;
+               if (target === document.body &&
+                   (target.classList.contains('translated-ltr') || target.classList.contains('translated-rtl'))) {
+                 console.log('Page translated, language detection updated');
+               }
+             }
+           });
+         });
+
+         // Start observing
+         observer.observe(document.body, {
+           attributes: true,
+           attributeFilter: ['class']
+         });
+
+         // Also listen for Google Translate's language change events
+         if (window.google && window.google.translate) {
+           window.google.translate.TranslateElement.prototype.onLanguageChange = function() {
+             console.log('Google Translate language changed');
+           };
+         }
+
+         // Override Google Translate's language change function
+         if (window.google && window.google.translate) {
+           const originalOnLanguageChange = window.google.translate.TranslateElement.prototype.onLanguageChange;
+           window.google.translate.TranslateElement.prototype.onLanguageChange = function() {
+             console.log('Google Translate language changed - intercepted');
+             if (originalOnLanguageChange) {
+               originalOnLanguageChange.call(this);
+             }
+           };
+         }
+
+         // Add a more direct approach - listen for clicks on Google Translate elements
+         document.addEventListener('click', function(event) {
+           if (event.target.closest('.goog-te-combo')) {
+             setTimeout(function() {
+               console.log('Google Translate combo clicked, checking language...');
+               const langSelect = document.querySelector('.goog-te-combo');
+               if (langSelect && langSelect.value) {
+                 console.log('Current Google Translate language:', langSelect.value);
+               }
+             }, 100);
+           }
+         });
+       });
     </script>
 
     <div id="google_translate_element" class="translate-element"></div>

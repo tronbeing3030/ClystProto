@@ -639,7 +639,7 @@
         align-items: center;
         justify-content: space-between;
       }
-      
+
       .say-aloud-btn {
         background: #ffffffd3;
         border: none;
@@ -753,7 +753,6 @@
           </button>
           {% endif %}
 
-        
           <div class="product-header">
             <h1 class="product-title">{{ product.title }}</h1>
             <div class="product-price">Rs.{{ product.price }}</div>
@@ -799,7 +798,7 @@
             >Purchase</a
           >
           <div class="product-options">
-          <button
+            <button
               class="share-btn"
               onclick="copyToClipboard(window.location.host + '{{ url_for('product_buy', product_id=product.product_id) }}')"
             >
@@ -823,8 +822,6 @@
           />
         </div>
         {% endif %}
-        
-            
       </div>
     </div>
 
@@ -858,13 +855,12 @@
         );
       }
 
-      
       function sayAloud(text) {
         const message = new SpeechSynthesisUtterance();
         message.text = `The title of the artwork is ${text.title}. It is created by ${text.artist}. The price of the artwork is Rs.${text.price}. The description says it is ${text.description}.`;
         window.speechSynthesis.speak(message); // Start speaking
       }
-      
+
       async function copyToClipboard(textToCopy) {
         try {
           await navigator.clipboard.writeText(textToCopy);
