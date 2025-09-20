@@ -74,9 +74,7 @@
         text-decoration: none;
         color: #555;
         font-size: 16px;
-        padding-bottom: 3px;
-        transition: color 0.2s, border-bottom-color 0.2s;
-        border-bottom: 2px solid transparent;
+        transition: color 0.2s;
       }
       .nav-center a:hover {
         color: #000;
@@ -193,20 +191,35 @@
           opacity: 1;
         }
       }
-      .mobile-menu {
-        display: none;
-        flex-direction: column;
-        position: sticky;
-        background: #fff;
-        padding: 10px var(--nav-pad-x);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      nav#topNav{
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
       }
+
+      .nav{
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+      }
+
+      .mobile-menu{
+          display: none;
+          flex-direction: column;
+          position: sticky;
+          background: #fff;
+          padding: 0;
+          box-shadow: none;
+      }
+
       .mobile-menu a {
         text-decoration: none;
         color: #333;
         padding: 10px 0;
         font-size: 15px;
-        border-bottom: 1px dashed #eee;
+        border-bottom: 1px solid #eee;
       }
       .mobile-menu a:last-child {
         border-bottom: none;
@@ -214,6 +227,9 @@
       .mobile-menu a.active {
         font-weight: 600;
         color: #000;
+      }
+      .mobile-menu a:hover {
+        opacity: 0.8;
       }
       .post {
         display: flex;
@@ -322,9 +338,17 @@
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
         margin: 0 10px;
       }
+      @media (min-width: 768px) {
+        .mobile-menu {
+          display: none !important;
+        }
+      }
       @media (max-width: 768px) {
         nav#topNav {
-          grid-template-columns: auto 1fr auto;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: flex-start;
           column-gap: 12px;
         }
         .hamburger {
@@ -451,7 +475,7 @@
         width: 100%;
         padding: 12px 16px;
         border: 2px solid #e9ecef;
-        border-radius: 8px;
+        border-radius: .2em;
         font-size: 16px;
         transition: border-color 0.2s;
         background: #fafafa;
@@ -479,7 +503,7 @@
         width: 100%;
         padding: 12px 16px;
         border: 2px solid #e9ecef;
-        border-radius: 8px;
+        border-radius: .2em;
         font-size: 16px;
         font-family: inherit;
         resize: vertical;
@@ -570,15 +594,17 @@
         margin-top: 16px;
       }
 
+      
       .translate-btn {
         position: fixed;
-        bottom: 150px;
+        bottom: 30px;
         right: 40px;
         width: 55px;
         height: 55px;
         border-radius: 50%;
+        border: none;
         text-decoration: none;
-        background: #111;
+        background: #003b3e;
         color: #fff;
         font-size: 28px;
         display: flex;
@@ -590,7 +616,7 @@
         z-index: 200;
       }
       .translate-btn:hover {
-        background: #333;
+        background: #00676c;
         transform: scale(1.1);
       }
 
@@ -599,6 +625,35 @@
         bottom: 220px;
         right: 40px;
         z-index: 1000;
+      }
+
+      .prompt-group{
+        position: relative;
+      }
+
+      .mic{
+        position: absolute;
+        right: 5px;
+        top: 31.5px;
+        color: #111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2em;
+        border: none;
+        font-size: 20px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .mic:hover{
+        background-color: #d8feff;
+        color: #005c61;
+        transform: translateY(-1px);
       }
 
       /* Responsive */
@@ -618,7 +673,8 @@
   <body>
     <!-- ===== NAVBAR ===== -->
     <nav id="topNav">
-      <div class="nav-left">
+      <div class="nav">
+              <div class="nav-left">
         <div class="hamburger" onclick="toggleMenu(event)">
           <span></span><span></span><span></span>
         </div>
@@ -651,8 +707,7 @@
         </a>
         {% endif %}
       </div>
-    </nav>
-
+      </div>
     <div class="mobile-menu" id="mobileMenu">
       <a href="{{ url_for('home') }}">Community Feed</a>
       <a href="{{ url_for('products_page') }}">Marketplace</a>
@@ -663,6 +718,7 @@
       <a href="{{ url_for('register') }}">Register</a>
       {% endif %}
     </div>
+    </nav>
 
     <div class="container">
       <!-- Main Content -->
@@ -755,7 +811,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group prompt-group">
                 <label class="form-label"> Generate with AI</label>
                 <input
                   type="text"
@@ -763,6 +819,7 @@
                   class="form-input"
                   placeholder="Optional prompt to guide AI (e.g., target buyer, style)"
                 />
+                <button onclick="getPrompt()" class="mic"><i class="fa-solid fa-microphone"></i></button>
                 <div class="form-actions form-actions-ai">
                   <button
                     type="button"
@@ -789,6 +846,16 @@
             </form>
 
             <script>
+
+              function toggleMenu(e) {
+                e?.stopPropagation?.();
+                const menu = document.getElementById("mobileMenu");
+                const now = menu.style.display === "flex" ? "none" : "flex";
+                menu.style.display = now;
+                if (now === "flex")
+                  document.getElementById("searchBelow").classList.remove("open");
+              }
+
               function hasImageSelected() {
                 const url = document
                   .getElementById("product_image")
@@ -1044,7 +1111,7 @@
       onclick="googleTranslateElementInit()"
       class="translate-btn"
     >
-      A/a
+      <i class="fa-solid fa-language"></i>
     </button>
 
     <script
@@ -1062,6 +1129,10 @@
           },
           "google_translate_element"
         );
+      }
+
+      function getPrompt(){
+        alert("Voice mode still in development. Please use text input for now.");
       }
     </script>
   </body>
