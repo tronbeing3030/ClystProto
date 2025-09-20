@@ -288,6 +288,7 @@
 }
 
 .btn-secondary:hover {
+	opacity: 1;
 	background: #45ecff;
 	color: #003b3e;
 	border: 1px solid #63ddff;
@@ -300,6 +301,8 @@
 	justify-content: center;
 	border-radius: 0.2em;
 	border: 1px solid #c4c4c4;
+	width: 100%;
+	padding: 20px;
 }
 
 .btn-danger:hover {
