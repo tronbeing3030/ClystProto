@@ -262,7 +262,7 @@ The application features an advanced natural language search system that underst
 ![Marketplace](screenshots/marketplace.png)
 *The marketplace page displaying products with price filtering and natural language search capabilities.*
 
-### Add Post Page with AI Suggestions
+### Add Post Page with AI Suggestions & Translation
 ![Add Post Page with AI Suggestions](screenshots/add_post_page_with_AI_suggestions.png)
 *Create post form featuring AI-powered title and description suggestions based on uploaded artwork and multilingual translation capabilities.*
 
@@ -346,12 +346,6 @@ export FLASK_SECRET_KEY=your_production_secret
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation
-- Review the code comments for implementation details
 
 ## 🔮 Future Enhancements
 
@@ -366,12 +360,6 @@ For support and questions:
 - **Review System**: Product reviews and ratings
 - **Categories**: Art categorization and filtering
 
-## 🐛 Known Issues & Limitations
-
-- **Database Models**: The `models/dbs.py` file contains commented-out advanced models that could be implemented
-- **Admin Panel**: Basic admin functionality exists but could be expanded
-- **File Size**: 16MB upload limit may need adjustment for high-resolution artwork
-- **Error Handling**: Some AI API calls could benefit from more robust error handling
 
 ## 📝 Development Notes
 
