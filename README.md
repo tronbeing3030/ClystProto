@@ -262,7 +262,7 @@ The application features an advanced natural language search system that underst
 ![Marketplace](screenshots/marketplace.png)
 *The marketplace page displaying products with price filtering and natural language search capabilities.*
 
-### Add Post Page with AI Suggestions
+### Add Post Page with AI Suggestions & Translation
 ![Add Post Page with AI Suggestions](screenshots/add_post_page_with_AI_suggestions.png)
 *Create post form featuring AI-powered title and description suggestions based on uploaded artwork and multilingual translation capabilities.*
 
