@@ -488,9 +488,9 @@
         margin: 30px auto;
         padding: 25px;
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        border-radius: 12px;
-        border: 1px solid #e9ecef;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-radius: .2em;
+        border: 1px solid #d8feff;
+        box-shadow: 0 0 12px #3bffe236;
         position: relative;
         overflow: hidden;
       }
@@ -502,7 +502,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #111 0%, #45ecff 50%, #111 100%);
+        background: #005c61;
       }
 
       .narrative-header {
@@ -523,9 +523,9 @@
       }
 
       .speak-btn {
-        background: linear-gradient(135deg, #45ecff 0%, #111 100%);
+        background:#ffffffd3;
         border: none;
-        color: white;
+        color: #111;
         padding: 12px;
         border-radius: 50%;
         cursor: pointer;
@@ -536,12 +536,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(69, 236, 255, 0.3);
       }
 
       .speak-btn:hover {
         transform: scale(1.05);
-        box-shadow: 0 6px 16px rgba(69, 236, 255, 0.4);
+        background-color: #d8feff;
+        color: #005c61;
+        border: 1px solid #d8feff;
+        border: none;
       }
 
       .speak-btn:active {
@@ -562,11 +564,6 @@
         100% {
           transform: scale(1);
         }
-      }
-
-      .portfolio-narrative h3 i {
-        color: #45ecff;
-        font-size: 18px;
       }
 
       .portfolio-narrative p {
@@ -603,7 +600,7 @@
       }
 
       .narrative-stat i {
-        color: #45ecff;
+        color: #003b3e;
         font-size: 12px;
       }
 
@@ -727,9 +724,10 @@
 
       .form-actions {
         display: flex;
-        flex-direction: column;
         gap: 12px;
-        justify-content: flex-end;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
         margin-top: 12px;
       }
 
@@ -769,16 +767,19 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #63ddff;
+        border: 1px solid #ccc;
         border-radius: 0.2em;
-        background: #45ecff;
-        color: #003b3e;
+        padding: 10px 20px;
+        background: #fff;
+        color: #111;
         cursor: pointer;
         font-weight: 600;
       }
 
       .btn-secondary:hover {
-        opacity: 0.5;
+        background: #d8feff;
+        border: 1px solid #005c61;
+        color: #005c61;
         transform: translateY(-1px);
       }
 
@@ -1056,7 +1057,6 @@
           <div class="portfolio-narrative">
             <div class="narrative-header">
               <h3>
-                <i class="fa-solid fa-palette"></i>
                 About This Collection
               </h3>
               <button
@@ -1072,22 +1072,22 @@
             <div class="narrative-meta">
               <div class="narrative-stats">
                 <div class="narrative-stat">
-                  <i class="fa-solid fa-images"></i>
+                  <i class="fa-solid fa-image"></i>
                   <span>{{ posts|length }} Posts</span>
                 </div>
                 <div class="narrative-stat">
-                  <i class="fa-solid fa-store"></i>
+                  <i class="fa-solid fa-box-open"></i>
                   <span>{{ products|length }} Products</span>
                 </div>
                 <div class="narrative-stat">
-                  <i class="fa-solid fa-paintbrush"></i>
+                  <i class="fa-solid fa-mug-saucer"></i>
                   <span
                     >{{ (posts|length + products|length) }} Total Works</span
                   >
                 </div>
               </div>
               <div class="narrative-stat">
-                <i class="fa-solid fa-robot"></i>
+                <i class="fa-solid fa-hat-wizard"></i>
                 <span>AI-Generated Narrative</span>
               </div>
             </div>
