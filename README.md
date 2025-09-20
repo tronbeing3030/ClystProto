@@ -252,6 +252,28 @@ The application features an advanced natural language search system that underst
 - **Modals**: Smooth overlay interactions
 - **Grid Layouts**: Responsive grid systems
 
+## 📸 Screenshots
+
+### Home Page - Community Feed
+![Home Page](screenshots/home_page.png)
+*The main community feed showcasing artists' posts with search functionality and responsive design.*
+
+### Marketplace
+![Marketplace](screenshots/marketplace.png)
+*The marketplace page displaying products with price filtering and natural language search capabilities.*
+
+### Artist Profile Page
+![Artist Profile](screenshots/artist_profile_page.png)
+*Artist profile featuring portfolio narrative, posts, and products with AI-generated content.*
+
+### Login Page
+![Login Page](screenshots/login_page.png)
+*Clean and modern login interface with secure authentication.*
+
+### Registration Page
+![Registration Page](screenshots/register_page.png)
+*User registration form with comprehensive profile setup including location and contact information.*
+
 ## 🔒 Security Features
 
 - **Password Hashing**: Secure password storage using Werkzeug
