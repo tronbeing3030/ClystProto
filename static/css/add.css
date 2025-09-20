@@ -294,12 +294,10 @@
 }
 
 .btn-danger {
-	color: #111;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 0.2em;
-	border: 1px solid #c4c4c4;
+	background: #f8f9fa;
+	color: #dc3545;
+	border: 1px solid #dc3545;
+	min-width: 120px;
 }
 
 .btn-danger:hover {
