@@ -50,7 +50,17 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///clyst.db'
+# Database configuration for production
+if os.getenv('FLASK_ENV') == 'production':
+    # Use PostgreSQL for production (Railway, Render)
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    if DATABASE_URL:
+        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL.replace('postgres://', 'postgresql://')
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///clyst.db'
+else:
+    # Use SQLite for development
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///clyst.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -515,4 +525,8 @@ if __name__ == "__main__":
     # Create database tables
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    
+    # Run the app
+    port = int(os.getenv('PORT', 5000))
+    debug_mode = os.getenv('FLASK_ENV') != 'production'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
