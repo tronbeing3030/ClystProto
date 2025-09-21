@@ -1,9 +1,13 @@
 # type: ignore[import]
 from datetime import date
 import os
+from dotenv import load_dotenv
 import natural_search 
 import ai
 import uuid
+
+# Load environment variables from .env file
+load_dotenv()
 from werkzeug.utils import secure_filename
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, jsonify
 import json
@@ -522,11 +526,17 @@ def product_buy(product_id):
 
 
 if __name__ == "__main__":
-    # Create database tables
-    with app.app_context():
-        db.create_all()
-    
-    # Run the app
-    port = int(os.getenv('PORT', 5000))
-    debug_mode = os.getenv('FLASK_ENV') != 'production'
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    try:
+        # Create database tables
+        with app.app_context():
+            db.create_all()
+            print("✅ Database tables created successfully")
+        
+        # Run the app
+        port = int(os.getenv('PORT', 5000))
+        debug_mode = os.getenv('FLASK_ENV') != 'production'
+        print(f"🚀 Starting app on port {port}, debug={debug_mode}")
+        app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    except Exception as e:
+        print(f"❌ Error starting app: {e}")
+        raise
